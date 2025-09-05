@@ -31,6 +31,11 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAddEdit));
             this.pannelMain = new Guna.UI2.WinForms.Guna2Panel();
+            this.btnBrowseOutput = new System.Windows.Forms.PictureBox();
+            this.btnBrowseInput = new System.Windows.Forms.PictureBox();
+            this.txtIpAddress4 = new Guna.UI2.WinForms.Guna2TextBox();
+            this.txtIpAddress3 = new Guna.UI2.WinForms.Guna2TextBox();
+            this.txtIpAddress2 = new Guna.UI2.WinForms.Guna2TextBox();
             this.btnAddInkjet = new Guna.UI2.WinForms.Guna2Button();
             this.txtOutputDirectory = new Guna.UI2.WinForms.Guna2TextBox();
             this.txtInputDirectory = new Guna.UI2.WinForms.Guna2TextBox();
@@ -47,15 +52,10 @@
             this.lblFrmMain = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblCloseForm = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
-            this.txtIpAddress2 = new Guna.UI2.WinForms.Guna2TextBox();
-            this.txtIpAddress3 = new Guna.UI2.WinForms.Guna2TextBox();
-            this.txtIpAddress4 = new Guna.UI2.WinForms.Guna2TextBox();
-            this.btnBrowseInput = new System.Windows.Forms.PictureBox();
-            this.btnBrowseOutput = new System.Windows.Forms.PictureBox();
             this.pannelMain.SuspendLayout();
-            this.pannelHeader.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseInput)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.btnBrowseOutput)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseInput)).BeginInit();
+            this.pannelHeader.SuspendLayout();
             this.SuspendLayout();
             // 
             // pannelMain
@@ -89,6 +89,95 @@
             this.pannelMain.Padding = new System.Windows.Forms.Padding(5);
             this.pannelMain.Size = new System.Drawing.Size(811, 560);
             this.pannelMain.TabIndex = 0;
+            // 
+            // btnBrowseOutput
+            // 
+            this.btnBrowseOutput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseOutput.Image")));
+            this.btnBrowseOutput.Location = new System.Drawing.Point(672, 391);
+            this.btnBrowseOutput.Name = "btnBrowseOutput";
+            this.btnBrowseOutput.Size = new System.Drawing.Size(43, 45);
+            this.btnBrowseOutput.TabIndex = 38;
+            this.btnBrowseOutput.TabStop = false;
+            this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
+            // 
+            // btnBrowseInput
+            // 
+            this.btnBrowseInput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseInput.Image")));
+            this.btnBrowseInput.Location = new System.Drawing.Point(672, 322);
+            this.btnBrowseInput.Name = "btnBrowseInput";
+            this.btnBrowseInput.Size = new System.Drawing.Size(43, 45);
+            this.btnBrowseInput.TabIndex = 37;
+            this.btnBrowseInput.TabStop = false;
+            this.btnBrowseInput.Click += new System.EventHandler(this.btnBrowseInput_Click);
+            // 
+            // txtIpAddress4
+            // 
+            this.txtIpAddress4.BackColor = System.Drawing.Color.White;
+            this.txtIpAddress4.BorderColor = System.Drawing.Color.Black;
+            this.txtIpAddress4.BorderRadius = 5;
+            this.txtIpAddress4.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtIpAddress4.DefaultText = "";
+            this.txtIpAddress4.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtIpAddress4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtIpAddress4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress4.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress4.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress4.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIpAddress4.ForeColor = System.Drawing.Color.Black;
+            this.txtIpAddress4.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress4.Location = new System.Drawing.Point(655, 193);
+            this.txtIpAddress4.Margin = new System.Windows.Forms.Padding(5);
+            this.txtIpAddress4.Name = "txtIpAddress4";
+            this.txtIpAddress4.PlaceholderText = "";
+            this.txtIpAddress4.SelectedText = "";
+            this.txtIpAddress4.Size = new System.Drawing.Size(60, 45);
+            this.txtIpAddress4.TabIndex = 36;
+            // 
+            // txtIpAddress3
+            // 
+            this.txtIpAddress3.BackColor = System.Drawing.Color.White;
+            this.txtIpAddress3.BorderColor = System.Drawing.Color.Black;
+            this.txtIpAddress3.BorderRadius = 5;
+            this.txtIpAddress3.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtIpAddress3.DefaultText = "";
+            this.txtIpAddress3.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtIpAddress3.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtIpAddress3.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress3.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress3.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress3.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIpAddress3.ForeColor = System.Drawing.Color.Black;
+            this.txtIpAddress3.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress3.Location = new System.Drawing.Point(573, 195);
+            this.txtIpAddress3.Margin = new System.Windows.Forms.Padding(5);
+            this.txtIpAddress3.Name = "txtIpAddress3";
+            this.txtIpAddress3.PlaceholderText = "";
+            this.txtIpAddress3.SelectedText = "";
+            this.txtIpAddress3.Size = new System.Drawing.Size(59, 45);
+            this.txtIpAddress3.TabIndex = 35;
+            // 
+            // txtIpAddress2
+            // 
+            this.txtIpAddress2.BackColor = System.Drawing.Color.White;
+            this.txtIpAddress2.BorderColor = System.Drawing.Color.Black;
+            this.txtIpAddress2.BorderRadius = 5;
+            this.txtIpAddress2.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtIpAddress2.DefaultText = "";
+            this.txtIpAddress2.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtIpAddress2.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtIpAddress2.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress2.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtIpAddress2.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress2.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIpAddress2.ForeColor = System.Drawing.Color.Black;
+            this.txtIpAddress2.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.txtIpAddress2.Location = new System.Drawing.Point(488, 193);
+            this.txtIpAddress2.Margin = new System.Windows.Forms.Padding(5);
+            this.txtIpAddress2.Name = "txtIpAddress2";
+            this.txtIpAddress2.PlaceholderText = "";
+            this.txtIpAddress2.SelectedText = "";
+            this.txtIpAddress2.Size = new System.Drawing.Size(60, 45);
+            this.txtIpAddress2.TabIndex = 34;
             // 
             // btnAddInkjet
             // 
@@ -342,95 +431,6 @@
             this.guna2DragControl1.TargetControl = this.pannelHeader;
             this.guna2DragControl1.UseTransparentDrag = true;
             // 
-            // txtIpAddress2
-            // 
-            this.txtIpAddress2.BackColor = System.Drawing.Color.White;
-            this.txtIpAddress2.BorderColor = System.Drawing.Color.Black;
-            this.txtIpAddress2.BorderRadius = 5;
-            this.txtIpAddress2.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtIpAddress2.DefaultText = "";
-            this.txtIpAddress2.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtIpAddress2.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtIpAddress2.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress2.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress2.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress2.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIpAddress2.ForeColor = System.Drawing.Color.Black;
-            this.txtIpAddress2.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress2.Location = new System.Drawing.Point(488, 193);
-            this.txtIpAddress2.Margin = new System.Windows.Forms.Padding(5);
-            this.txtIpAddress2.Name = "txtIpAddress2";
-            this.txtIpAddress2.PlaceholderText = "";
-            this.txtIpAddress2.SelectedText = "";
-            this.txtIpAddress2.Size = new System.Drawing.Size(60, 45);
-            this.txtIpAddress2.TabIndex = 34;
-            // 
-            // txtIpAddress3
-            // 
-            this.txtIpAddress3.BackColor = System.Drawing.Color.White;
-            this.txtIpAddress3.BorderColor = System.Drawing.Color.Black;
-            this.txtIpAddress3.BorderRadius = 5;
-            this.txtIpAddress3.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtIpAddress3.DefaultText = "";
-            this.txtIpAddress3.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtIpAddress3.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtIpAddress3.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress3.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress3.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress3.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIpAddress3.ForeColor = System.Drawing.Color.Black;
-            this.txtIpAddress3.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress3.Location = new System.Drawing.Point(573, 195);
-            this.txtIpAddress3.Margin = new System.Windows.Forms.Padding(5);
-            this.txtIpAddress3.Name = "txtIpAddress3";
-            this.txtIpAddress3.PlaceholderText = "";
-            this.txtIpAddress3.SelectedText = "";
-            this.txtIpAddress3.Size = new System.Drawing.Size(59, 45);
-            this.txtIpAddress3.TabIndex = 35;
-            // 
-            // txtIpAddress4
-            // 
-            this.txtIpAddress4.BackColor = System.Drawing.Color.White;
-            this.txtIpAddress4.BorderColor = System.Drawing.Color.Black;
-            this.txtIpAddress4.BorderRadius = 5;
-            this.txtIpAddress4.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtIpAddress4.DefaultText = "";
-            this.txtIpAddress4.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
-            this.txtIpAddress4.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
-            this.txtIpAddress4.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress4.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtIpAddress4.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress4.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIpAddress4.ForeColor = System.Drawing.Color.Black;
-            this.txtIpAddress4.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtIpAddress4.Location = new System.Drawing.Point(655, 193);
-            this.txtIpAddress4.Margin = new System.Windows.Forms.Padding(5);
-            this.txtIpAddress4.Name = "txtIpAddress4";
-            this.txtIpAddress4.PlaceholderText = "";
-            this.txtIpAddress4.SelectedText = "";
-            this.txtIpAddress4.Size = new System.Drawing.Size(60, 45);
-            this.txtIpAddress4.TabIndex = 36;
-            // 
-            // btnBrowseInput
-            // 
-            this.btnBrowseInput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseInput.Image")));
-            this.btnBrowseInput.Location = new System.Drawing.Point(672, 322);
-            this.btnBrowseInput.Name = "btnBrowseInput";
-            this.btnBrowseInput.Size = new System.Drawing.Size(43, 45);
-            this.btnBrowseInput.TabIndex = 37;
-            this.btnBrowseInput.TabStop = false;
-            this.btnBrowseInput.Click += new System.EventHandler(this.btnBrowseInput_Click);
-            // 
-            // btnBrowseOutput
-            // 
-            this.btnBrowseOutput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseOutput.Image")));
-            this.btnBrowseOutput.Location = new System.Drawing.Point(672, 391);
-            this.btnBrowseOutput.Name = "btnBrowseOutput";
-            this.btnBrowseOutput.Size = new System.Drawing.Size(43, 45);
-            this.btnBrowseOutput.TabIndex = 38;
-            this.btnBrowseOutput.TabStop = false;
-            this.btnBrowseOutput.Click += new System.EventHandler(this.btnBrowseOutput_Click);
-            // 
             // frmAddEdit
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
@@ -444,10 +444,10 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "inkjetAddEdit";
             this.pannelMain.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseOutput)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseInput)).EndInit();
             this.pannelHeader.ResumeLayout(false);
             this.pannelHeader.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseInput)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.btnBrowseOutput)).EndInit();
             this.ResumeLayout(false);
 
         }

@@ -129,11 +129,11 @@
   </data>
   <data name="btnBrowseInput.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAC5SURBVFhH7ZgxDoMwDEUZewTGjh17JC/5inIJxh6nI8fgOB1BdIgUK61CTVKE/pPeaPwkJqfr
-        CCEnJYTQO+fuJerZqgAYAMwbHfR3qiAifWZ5qfUjATwzi7dYNxLAlFnaypeIXHRTwp8D3+qmhCMEAnjo
-        rshBAifdFWFgmQy0ykCrDLTKQKsMtMpAqwy0+jVwzAy0dtRdEe/9NTPQ1PX01V0JPx7ue/n5HtEAuOkn
-        jlquf07vJ4SchQUw/DabAIo7ZwAAAABJRU5ErkJggg==
+        iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAABGdBTUEAALGPC/xhBQAAALlJREFUWEft
+        mDEOgzAMRRl7BMaOHXskL/mKcgnGHqcjx+A4HUF0iBQrrUJNUoT+k95o/CQmp+sIISclhNA75+4l6tmq
+        ABgAzBsd9HeqICJ9Znmp9SMBPDOLt1g3EsCUWdrKl4hcdFPCnwPf6qaEIwQCeOiuyEECJ90VYWCZDLTK
+        QKsMtMpAqwy0ykCrDLT6NXDMDLR21F0R7/01M9DU9fTVXQk/Hu57+fke0QC46SeOWq5/Tu8nhJyFBTD8
+        NpsAijtnAAAAAElFTkSuQmCC
 </value>
   </data>
   <metadata name="guna2DragControl1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
