@@ -66,76 +66,48 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // รอ 10 วิ (จำลองหน่วงเวลา)
                     await Task.Delay(10000);
 
-                    // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-                    if (fileName.Contains("ER"))
+                    bool validateSendError = await SimulateError(fileName,"Auto");
+
+                    if (validateSendError)
                     {
+                        txtLaterPrintDetail.BorderColor = Color.Black;
+                        lblError.Visible = false;
+    
                         await Task.Run(() =>
                         {
+                            string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
+                            string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
+
                             // --- Create a new status object to send to the manager ---
                             var currentStatus = new CurrentInkjetStatus
                             {
                                 Timestamp = DateTime.Now,
                                 InkjetName = _currentConfig.InkjetName,
-                                ErrorDetail = "Send_Data_Fail",
-                                ErrorCode = "E100"
+                                CurrentMessage = fileContent, // Use existing data                       
                             };
 
                             // ✅ Call the new manager to update this printer's status and rewrite the file.
                             LiveStatusManager.UpdateAndSaveStatus(currentStatus);
+
+                            File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+
+                            // ลบไฟล์ต้นทาง
+                            File.Delete(txtFile);
                         });
 
-                        // แจ้ง UI ว่าเกิด Error (ต้องใช้ Invoke เพราะเราอยู่ใน async event)
-                        this.Invoke((MethodInvoker)(() =>
-                        {
-                            lblError.Visible = true;
-                            txtLaterPrintDetail.BorderColor = Color.Red;
-                            lblError.Text = $"❌ ERROR [ {fileContent} ]";
-                        }));
+                        // อัพเดท UI หลังประมวลผลเสร็จ
+                        txtQueueDataValue.Text = $"{processTime:G} - {fileName}";
+                        txtWaitingPrintDetail.Text = fileContent;
 
-                        // ตั้งสถานะให้พร้อมรับไฟล์ใหม่ (ไม่ลบไฟล์ และไม่อัพเดตอื่น ๆ)
+                        // บันทึกการเปลี่ยนแปลงลงไฟล์ JSON
+                        _currentConfig.CurrentData = $"{processTime:G} - {fileName}";
+                        _currentConfig.LatestPrintDetail = fileContent;
+                        ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+
+                        txtCurrentData.Text = "Waiting Data From Server";
+                        txtLaterPrintDetail.Text = "";
                         _isProcessingFile = false;
-
-                        // ออกจากเมธอดไม่ทำงานต่อ
-                        return;
-                    }
-                    txtLaterPrintDetail.BorderColor = Color.Black;
-                    lblError.Visible = false;
-
-                    // ถ้าไม่ใช่ไฟล์ Error ทำงานตามปกติ
-                    await Task.Run(() =>
-                    {
-                        string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
-                        string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
-
-                        // --- Create a new status object to send to the manager ---
-                        var currentStatus = new CurrentInkjetStatus
-                        {
-                            Timestamp = DateTime.Now,
-                            InkjetName = _currentConfig.InkjetName,
-                            CurrentMessage = fileContent, // Use existing data                       
-                        };
-
-                        // ✅ Call the new manager to update this printer's status and rewrite the file.
-                        LiveStatusManager.UpdateAndSaveStatus(currentStatus);
-
-                        File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
-
-                        // ลบไฟล์ต้นทาง
-                        File.Delete(txtFile);
-                    });
-
-                    // อัพเดท UI หลังประมวลผลเสร็จ
-                    txtQueueDataValue.Text = $"{processTime:G} - {fileName}";
-                    txtWaitingPrintDetail.Text = fileContent;
-
-                    // บันทึกการเปลี่ยนแปลงลงไฟล์ JSON
-                    _currentConfig.CurrentData = $"{processTime:G} - {fileName}";
-                    _currentConfig.LatestPrintDetail = fileContent;
-                    ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
-
-                    txtCurrentData.Text = "Waiting Data From Server";
-                    txtLaterPrintDetail.Text = "";
-                    _isProcessingFile = false;
+                    }                
                 }
                 else
                 {
@@ -332,7 +304,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             btnSaveManual.Visible = false;
         }
 
-        private void btnSaveManual_Click(object sender, EventArgs e)
+        private async void btnSaveManual_Click(object sender, EventArgs e)
         {
             if(txtWaitingPrintDetail.Text == "")
             {
@@ -358,37 +330,114 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // 4. Create the log entry with the "Manual" type
                     string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Manual,{contentToLog.Replace(Environment.NewLine, " ")}";
 
-                    // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-                    if (contentToLog.Contains("ER"))
-                    {        
-                            lblErrorManual.Visible = true;
-                            txtWaitingPrintDetail.BorderColor = Color.Red;
-                            lblErrorManual.Text = $"❌ ERROR [ {contentToLog} ]";
+                    bool validateSendError = await SimulateError(contentToLog,"manual");
 
-                        // ออกจากเมธอดไม่ทำงานต่อ
-                        return;
+                    
+                    if (validateSendError)
+                    {
+                        lblErrorManual.Visible = false;
+                        txtWaitingPrintDetail.BorderColor = Color.Black;
+
+                        File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+
+                        MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
+                        ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+                        txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
+                        txtWaitingPrintDetail.ReadOnly = true;
+                        btnEditManual.Visible = true;
+                        btnClearManual.Visible = false;
+                        btnSaveManual.Visible = false;
                     }
-                    lblErrorManual.Visible = false;
-                    txtWaitingPrintDetail.BorderColor = Color.Black;
+
+                    //// ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
+                    //if (contentToLog.Contains("ER"))
+                    //{        
+                    //        lblErrorManual.Visible = true;
+                    //        txtWaitingPrintDetail.BorderColor = Color.Red;
+                    //        lblErrorManual.Text = $"❌ ERROR [ {contentToLog} ]";
+
+                    //    // ออกจากเมธอดไม่ทำงานต่อ
+                    //    return;
+                    //}
 
                     // 5. Write to the log file
-                    File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+                    //File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
 
-                    MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                    _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
-                    ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
-                    txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
-                    txtWaitingPrintDetail.ReadOnly = true;
-                    btnEditManual.Visible = true;
-                    btnClearManual.Visible = false;
-                    btnSaveManual.Visible = false;
+                    //_currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
+                    //ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+                    //txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
+                    //txtWaitingPrintDetail.ReadOnly = true;
+                    //btnEditManual.Visible = true;
+                    //btnClearManual.Visible = false;
+                    //btnSaveManual.Visible = false;
 
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("เกิดข้อผิดพลาดในการบันทึก Log: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+        }
+
+        public async Task<bool> SimulateError(string errorName, string type)
+        {
+            var currentStatus = new CurrentInkjetStatus { };
+            // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
+            if (errorName.Contains("ER"))
+            {
+                await Task.Run(() =>
+                {
+                    // --- Create a new status object to send to the manager ---
+                    if (type == "Auto")
+                    {
+                         currentStatus = new CurrentInkjetStatus
+                        {
+                            Timestamp = DateTime.Now,
+                            InkjetName = _currentConfig.InkjetName,
+                            ErrorDetail = "Send_Data_Fail_Auto",
+                            ErrorCode = "E100"
+                        };
+
+                        // แจ้ง UI ว่าเกิด Error (ต้องใช้ Invoke เพราะเราอยู่ใน async event)
+                        this.Invoke((MethodInvoker)(() =>
+                        {
+                            lblError.Visible = true;
+                            txtLaterPrintDetail.BorderColor = Color.Red;
+                            lblError.Text = $"❌ ERROR [ {errorName} ]";
+                        }));
+                    }
+                    else
+                    {
+                         currentStatus = new CurrentInkjetStatus
+                        {
+                            Timestamp = DateTime.Now,
+                            InkjetName = _currentConfig.InkjetName,
+                            ErrorDetail = "Send_Data_Fail_Manual",
+                            ErrorCode = "E200"
+                        };
+                        this.Invoke((MethodInvoker)(() =>
+                        {
+                            lblErrorManual.Visible = true;
+                            txtWaitingPrintDetail.BorderColor = Color.Red;
+                            lblErrorManual.Text = $"❌ ERROR [ {errorName} ]";
+                        }));
+                    }
+                    // ✅ Call the new manager to update this printer's status and rewrite the file.
+                    LiveStatusManager.UpdateAndSaveStatus(currentStatus);
+                });
+
+                // ตั้งสถานะให้พร้อมรับไฟล์ใหม่ (ไม่ลบไฟล์ และไม่อัพเดตอื่น ๆ)
+                _isProcessingFile = false;
+                // ออกจากเมธอดไม่ทำงานต่อ
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }
