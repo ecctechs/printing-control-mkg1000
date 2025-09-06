@@ -322,24 +322,22 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             {
                 try
                 {
-                    // 3. Prepare data for logging
+                    // Prepare data for logging
                     var processTime = DateTime.Now;
                     string contentToLog = txtWaitingPrintDetail.Text;
                     string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
 
-                    // 4. Create the log entry with the "Manual" type
+                    // Create the log entry with the "Manual" type
                     string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Manual,{contentToLog.Replace(Environment.NewLine, " ")}";
 
                     bool validateSendError = await SimulateError(contentToLog,"manual");
-
-                    
+                  
                     if (validateSendError)
                     {
                         lblErrorManual.Visible = false;
                         txtWaitingPrintDetail.BorderColor = Color.Black;
 
                         File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
-
                         MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                         _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
@@ -350,30 +348,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         btnClearManual.Visible = false;
                         btnSaveManual.Visible = false;
                     }
-
-                    //// ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-                    //if (contentToLog.Contains("ER"))
-                    //{        
-                    //        lblErrorManual.Visible = true;
-                    //        txtWaitingPrintDetail.BorderColor = Color.Red;
-                    //        lblErrorManual.Text = $"❌ ERROR [ {contentToLog} ]";
-
-                    //    // ออกจากเมธอดไม่ทำงานต่อ
-                    //    return;
-                    //}
-
-                    // 5. Write to the log file
-                    //File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
-
-                    //MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    //_currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
-                    //ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
-                    //txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
-                    //txtWaitingPrintDetail.ReadOnly = true;
-                    //btnEditManual.Visible = true;
-                    //btnClearManual.Visible = false;
-                    //btnSaveManual.Visible = false;
 
                 }
                 catch (Exception ex)
@@ -442,3 +416,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         }
     }
 }
+
+
+

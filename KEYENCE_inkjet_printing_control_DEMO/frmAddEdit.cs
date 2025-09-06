@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 using KEYENCE_inkjet_printing_control_DEMO.Class;
 using Ookii.Dialogs.WinForms;
 
@@ -32,7 +33,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             isEditMode = true;
             _originalConfig = configToEdit;
 
-            lblFrmMain.Text = "Edit Inkjet";
+            lblFrmMain.Text = "Edit Inkjet Info";
             btnAddInkjet.Text = "Save";
 
             txtInkjetName.Text = configToEdit.InkjetName;
@@ -100,50 +101,69 @@ namespace KEYENCE_inkjet_printing_control_DEMO
 
         private bool IsDataValid()
         {
-            // 1. ตรวจสอบว่าทุกช่องกรอกข้อมูลครบถ้วนหรือไม่
+            // ตรวจสอบช่องกรอกครบ
             if (string.IsNullOrWhiteSpace(txtInkjetName.Text) ||
                 string.IsNullOrWhiteSpace(txtIpAddress1.Text) ||
+                string.IsNullOrWhiteSpace(txtIpAddress2.Text) ||
+                string.IsNullOrWhiteSpace(txtIpAddress3.Text) ||
+                string.IsNullOrWhiteSpace(txtIpAddress4.Text) ||
                 string.IsNullOrWhiteSpace(txtPort.Text) ||
                 string.IsNullOrWhiteSpace(txtInputDirectory.Text) ||
                 string.IsNullOrWhiteSpace(txtOutputDirectory.Text))
             {
                 MessageBox.Show("กรุณากรอกข้อมูลให้ครบทุกช่อง", "ข้อมูลไม่สมบูรณ์", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false; // ข้อมูลไม่ถูกต้อง
+                return false;
             }
 
-            // 2. ตรวจสอบข้อมูลซ้ำ
-            var allConfigs = ConfigManager.Load();
-            List<InkjetConfig> configsToCheck = isEditMode
-                ? allConfigs.Where(c => c.InkjetName != _originalConfig.InkjetName).ToList() // โหมดแก้ไข: เช็คตัวอื่นที่ไม่ใช่ตัวเอง
-                : allConfigs;                                                               // โหมดเพิ่ม: เช็คทั้งหมด
+            // รวม IP Address จาก 4 ช่อง
+            string currentIp = $"{txtIpAddress1.Text}.{txtIpAddress2.Text}.{txtIpAddress3.Text}.{txtIpAddress4.Text}";
 
+            // โหลด configs ทั้งหมด
+            var allConfigs = ConfigManager.Load();
+
+            // ถ้าอยู่โหมดแก้ไข: ข้ามตัวเอง
+            List<InkjetConfig> configsToCheck = isEditMode
+                ? allConfigs.Where(c => c.InkjetName != _originalConfig.InkjetName).ToList()
+                : allConfigs;
+
+            // ตรวจสอบ IP ซ้ำกับเครื่องอื่น
+            if (configsToCheck.Any(c => c.IpAddress.Equals(currentIp, StringComparison.OrdinalIgnoreCase)))
+            {
+                MessageBox.Show("IP Address นี้มีอยู่แล้วในเครื่องอื่น กรุณาใช้ IP อื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            // ตรวจสอบชื่อ Inkjet ซ้ำ
             if (configsToCheck.Any(c => c.InkjetName.Equals(txtInkjetName.Text, StringComparison.OrdinalIgnoreCase)))
             {
                 MessageBox.Show("ชื่อ Inkjet นี้มีอยู่แล้ว กรุณาใช้ชื่ออื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            if (configsToCheck.Any(c => c.IpAddress == txtIpAddress1.Text))
+            // ตรวจสอบ Input/Output Directory ซ้ำกับเครื่องอื่น
+            if (configsToCheck.Any(c => c.InputDirectory.Equals(txtInputDirectory.Text, StringComparison.OrdinalIgnoreCase)))
             {
-                MessageBox.Show("IP Address นี้มีอยู่แล้ว กรุณาใช้ IP อื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Input Directory นี้มีอยู่แล้วในเครื่องอื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            if (configsToCheck.Any(c => c.InputDirectory == txtInputDirectory.Text))
+            if (configsToCheck.Any(c => c.OutputDirectory.Equals(txtOutputDirectory.Text, StringComparison.OrdinalIgnoreCase)))
             {
-                MessageBox.Show("Input Directory นี้มีอยู่แล้ว กรุณาใช้ Directory อื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Output Directory นี้มีอยู่แล้วในเครื่องอื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            if (configsToCheck.Any(c => c.OutputDirectory == txtOutputDirectory.Text))
+            // ตรวจสอบ Input ≠ Output ในเครื่องเดียวกัน
+            if (txtInputDirectory.Text.Equals(txtOutputDirectory.Text, StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show("Output Directory นี้มีอยู่แล้ว กรุณาใช้ Directory อื่น", "ข้อมูลซ้ำ", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Input Directory และ Output Directory ต้องไม่ซ้ำกัน", "ข้อมูลไม่ถูกต้อง", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return false;
             }
 
-            // ถ้าผ่านทุกการตรวจสอบ
-            return true; // ข้อมูลถูกต้อง
+            return true; // ผ่านทุกการตรวจสอบ
         }
+
+
 
         public void SelectFolder(Guna.UI2.WinForms.Guna2TextBox targetTextBox, string description)
         {
@@ -169,6 +189,54 @@ namespace KEYENCE_inkjet_printing_control_DEMO
         private void btnBrowseOutput_Click(object sender, EventArgs e)
         {
             SelectFolder(txtOutputDirectory, "เลือกโฟลเดอร์สำหรับ Output");
+        }
+
+        // ตรวจสอบว่าเป็นค่า 0-255 และไม่เกิน 3 หลัก
+        private void ValidateIpOctet(object sender, EventArgs e)
+        {
+            var textBox = sender as Guna.UI2.WinForms.Guna2TextBox;
+            if (textBox == null) return;
+
+            // จำกัดจำนวนตัวอักษรสูงสุด 3 หลัก
+            textBox.MaxLength = 3;
+
+            // ตรวจสอบค่าตัวเลข
+            if (int.TryParse(textBox.Text, out int value))
+            {
+                if (value > 255)
+                {
+                    textBox.Text = "255";
+                    textBox.SelectionStart = textBox.Text.Length; // ย้าย cursor ไปท้าย
+                }
+            }
+        }
+
+
+        private void AllowNumbersOnly(object sender, KeyPressEventArgs e)
+        {
+            // อนุญาตเฉพาะตัวเลข และปุ่มควบคุม (เช่น Backspace, Delete)
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtPort_TextChanged(object sender, EventArgs e)
+        {
+            // ตรวจสอบค่าตัวเลข
+            if (int.TryParse(txtPort.Text, out int value))
+            {
+                if (value > 65535)
+                {
+                    txtPort.Text = "65535";
+                    txtPort.SelectionStart = txtPort.Text.Length; // ย้าย cursor ไปท้าย
+                }
+            }
+        }
+
+        private void pannelMain_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

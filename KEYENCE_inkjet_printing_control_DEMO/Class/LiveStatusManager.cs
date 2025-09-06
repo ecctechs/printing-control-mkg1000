@@ -76,8 +76,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
                     $"{status.Timestamp:yyyy-MM-dd HH:mm:ss}," +
                     $"{status.InkjetName}," +
                     $"{status.Status}," +
-                    $"{status.ErrorDetail ?? ""}," +
-                    $"{status.ErrorCode ?? ""}," +
+                    $"{status.ErrorDetail ?? "---"}," +
+                    $"{status.ErrorCode ?? "---"}," +
                     $"\"{status.CurrentMessage?.Replace("\"", "\"\"") ?? ""}\""
                 );
             }
