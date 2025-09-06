@@ -71,13 +71,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     {
                         await Task.Run(() =>
                         {
-                            //StatusLogger.LogEvent(
-                            //    _currentConfig.InkjetName,
-                            //    "ERROR",
-                            //    "Send_Data_Fail",
-                            //    fileContent
-                            //);
-
                             // --- Create a new status object to send to the manager ---
                             var currentStatus = new CurrentInkjetStatus
                             {
@@ -114,12 +107,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
                         string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
 
-                        //StatusLogger.LogEvent(
-                        //    _currentConfig.InkjetName,
-                        //    "INFO",
-                        //    "Job_Processed_Auto",
-                        //    fileContent
-                        //);
                         // --- Create a new status object to send to the manager ---
                         var currentStatus = new CurrentInkjetStatus
                         {
