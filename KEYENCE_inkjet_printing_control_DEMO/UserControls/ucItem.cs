@@ -32,15 +32,15 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             // ✅ 5. ตั้งค่าและเริ่มการทำงานของ Timer
             _fileMonitorTimer = new Timer();
             _fileMonitorTimer.Interval = 2000; // ตรวจสอบทุกๆ 2 วินาที
-            _fileMonitorTimer.Tick += FileMonitorTimer_Tick;
+            _fileMonitorTimer.Tick += ProcessFileTimerTick;
             _fileMonitorTimer.Start();
         }
 
         // สร้างเมธอดสำหรับจัดการ Timer Tick (ทำงานแบบ async)
-        private async void FileMonitorTimer_Tick(object sender, EventArgs e)
+        private async void ProcessFileTimerTick(object sender, EventArgs e)
         {
             if (_isProcessingFile) return;
-            if (_currentConfig == null || string.IsNullOrEmpty(_currentConfig.InputDirectory) || !Directory.Exists(_currentConfig.InputDirectory))
+            if (_currentConfig == null || string.IsNullOrEmpty(_currentConfig.InputDirectory) || !Directory.Exists(_currentConfig.InputDirectory)) // กรณีนี้ที่โฟลเดอร์ถูกเซ็ตไว้ แล้วโดนลบจะเข้าเงือนไขนี้
             {
                 // อาจแสดงข้อความสถานะได้
                 txtCurrentData.Text = "Invalid Input Directory";
@@ -259,7 +259,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         }
 
 
-        private void InitializeLeftEdgePanel()
+        private void InitializeLeftEdgePanel() // ตั้งค่าเริ่มต้น ขอบซ้าย pannelDetail โค้ง
         {
             _leftEdgePanel = new Panel();
             _leftEdgePanel.Size = new Size(5, panelDetails.Height); // กว้าง 10 px
@@ -267,7 +267,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             _leftEdgePanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
             panelDetails.Controls.Add(_leftEdgePanel);
         }
-        private void SetPanel3RoundedCorners(Panel panel, int radius)
+        private void SetPanel3RoundedCorners(Panel panel, int radius)  // ฟังก์ชันสำหรับทำให้ Panel มีมุมโค้งมนตาม radius ที่กำหนด
         {
             GraphicsPath path = new GraphicsPath();
             int w = panel.Width;
@@ -361,12 +361,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
                     if (contentToLog.Contains("ER"))
                     {        
-                            StatusLogger.LogEvent(
-                                _currentConfig.InkjetName,
-                                "ERROR",
-                                "Send_Data_Fail",
-                                contentToLog
-                            );
                             lblErrorManual.Visible = true;
                             txtWaitingPrintDetail.BorderColor = Color.Red;
                             lblErrorManual.Text = $"❌ ERROR [ {contentToLog} ]";
@@ -380,12 +374,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // 5. Write to the log file
                     File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
 
-                    StatusLogger.LogEvent(
-                          _currentConfig.InkjetName,
-                          "INFO",                 // LogLevel for a successful job
-                          "Job_Processed_Manual",   // A clear EventType
-                          contentToLog             // The message is the content of the file
-                      );
                     MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;

@@ -91,7 +91,6 @@
     <Compile Include="Class\CurrentInkjetStatus.cs" />
     <Compile Include="Class\InkjetConfig.cs" />
     <Compile Include="Class\LiveStatusManager.cs" />
-    <Compile Include="Class\StatusLogger.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
