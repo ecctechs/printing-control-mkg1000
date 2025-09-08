@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -234,9 +235,16 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             }
         }
 
-        private void pannelMain_Paint(object sender, PaintEventArgs e)
+        // hide caret
+        private void txtInputDirectory_Enter(object sender, EventArgs e)
         {
+            btnAddInkjet.Focus();
+        }
 
+        // hide caret
+        private void txtOutputDirectory_Enter(object sender, EventArgs e)
+        {
+            btnAddInkjet.Focus();
         }
     }
 }

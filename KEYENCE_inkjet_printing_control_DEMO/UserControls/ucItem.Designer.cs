@@ -129,7 +129,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblStatusValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatusValue.Location = new System.Drawing.Point(128, 76);
             this.lblStatusValue.Name = "lblStatusValue";
-            this.lblStatusValue.Size = new System.Drawing.Size(114, 19);
+            this.lblStatusValue.Size = new System.Drawing.Size(143, 24);
             this.lblStatusValue.TabIndex = 19;
             this.lblStatusValue.Text = "guna2HtmlLabel9";
             // 
@@ -139,7 +139,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblStatus.Location = new System.Drawing.Point(18, 75);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(59, 19);
+            this.lblStatus.Size = new System.Drawing.Size(72, 24);
             this.lblStatus.TabIndex = 18;
             this.lblStatus.Text = "Status :";
             // 
@@ -149,7 +149,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblIpAddressValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblIpAddressValue.Location = new System.Drawing.Point(128, 49);
             this.lblIpAddressValue.Name = "lblIpAddressValue";
-            this.lblIpAddressValue.Size = new System.Drawing.Size(114, 19);
+            this.lblIpAddressValue.Size = new System.Drawing.Size(143, 24);
             this.lblIpAddressValue.TabIndex = 17;
             this.lblIpAddressValue.Text = "guna2HtmlLabel9";
             // 
@@ -159,7 +159,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblInkjetNameValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInkjetNameValue.Location = new System.Drawing.Point(144, 19);
             this.lblInkjetNameValue.Name = "lblInkjetNameValue";
-            this.lblInkjetNameValue.Size = new System.Drawing.Size(114, 19);
+            this.lblInkjetNameValue.Size = new System.Drawing.Size(143, 24);
             this.lblInkjetNameValue.TabIndex = 8;
             this.lblInkjetNameValue.Text = "guna2HtmlLabel9";
             // 
@@ -169,7 +169,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblIpAddress.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblIpAddress.Location = new System.Drawing.Point(18, 48);
             this.lblIpAddress.Name = "lblIpAddress";
-            this.lblIpAddress.Size = new System.Drawing.Size(91, 19);
+            this.lblIpAddress.Size = new System.Drawing.Size(112, 24);
             this.lblIpAddress.TabIndex = 16;
             this.lblIpAddress.Text = "IP Address :";
             // 
@@ -179,7 +179,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblInkjetName.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblInkjetName.Location = new System.Drawing.Point(18, 18);
             this.lblInkjetName.Name = "lblInkjetName";
-            this.lblInkjetName.Size = new System.Drawing.Size(98, 19);
+            this.lblInkjetName.Size = new System.Drawing.Size(120, 24);
             this.lblInkjetName.TabIndex = 0;
             this.lblInkjetName.Text = "Inkjet Name :";
             // 
@@ -231,7 +231,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblErrorManual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.lblErrorManual.Location = new System.Drawing.Point(623, 60);
             this.lblErrorManual.Name = "lblErrorManual";
-            this.lblErrorManual.Size = new System.Drawing.Size(90, 19);
+            this.lblErrorManual.Size = new System.Drawing.Size(116, 24);
             this.lblErrorManual.TabIndex = 36;
             this.lblErrorManual.Text = "ER DETECT";
             this.lblErrorManual.Visible = false;
@@ -243,7 +243,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblError.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.lblError.Location = new System.Drawing.Point(197, 60);
             this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(90, 19);
+            this.lblError.Size = new System.Drawing.Size(116, 24);
             this.lblError.TabIndex = 35;
             this.lblError.Text = "ER DETECT";
             this.lblError.Visible = false;
@@ -331,7 +331,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblCloseForm.ForeColor = System.Drawing.Color.White;
             this.lblCloseForm.Location = new System.Drawing.Point(6, 0);
             this.lblCloseForm.Name = "lblCloseForm";
-            this.lblCloseForm.Size = new System.Drawing.Size(15, 22);
+            this.lblCloseForm.Size = new System.Drawing.Size(18, 27);
             this.lblCloseForm.TabIndex = 33;
             this.lblCloseForm.Text = "X";
             this.lblCloseForm.Click += new System.EventHandler(this.lblCloseForm_Click);
@@ -346,7 +346,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtLaterPrintDetail.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.txtLaterPrintDetail.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.txtLaterPrintDetail.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtLaterPrintDetail.Enabled = false;
             this.txtLaterPrintDetail.FillColor = System.Drawing.Color.WhiteSmoke;
             this.txtLaterPrintDetail.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtLaterPrintDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -360,6 +359,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtLaterPrintDetail.SelectedText = "";
             this.txtLaterPrintDetail.Size = new System.Drawing.Size(345, 41);
             this.txtLaterPrintDetail.TabIndex = 28;
+            this.txtLaterPrintDetail.Enter += new System.EventHandler(this.txtLaterPrintDetail_Enter);
             // 
             // txtCurrentData
             // 
@@ -371,7 +371,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtCurrentData.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.txtCurrentData.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.txtCurrentData.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtCurrentData.Enabled = false;
             this.txtCurrentData.FillColor = System.Drawing.Color.WhiteSmoke;
             this.txtCurrentData.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtCurrentData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -385,6 +384,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtCurrentData.SelectedText = "";
             this.txtCurrentData.Size = new System.Drawing.Size(345, 30);
             this.txtCurrentData.TabIndex = 27;
+            this.txtCurrentData.Enter += new System.EventHandler(this.txtCurrentData_Enter);
             // 
             // txtWaitingPrintDetail
             // 
@@ -415,13 +415,12 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtQueueDataValue.BackColor = System.Drawing.Color.White;
             this.txtQueueDataValue.BorderColor = System.Drawing.Color.Black;
             this.txtQueueDataValue.BorderRadius = 5;
-            this.txtQueueDataValue.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtQueueDataValue.Cursor = System.Windows.Forms.Cursors.AppStarting;
             this.txtQueueDataValue.DefaultText = "";
             this.txtQueueDataValue.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.txtQueueDataValue.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.txtQueueDataValue.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
             this.txtQueueDataValue.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
-            this.txtQueueDataValue.Enabled = false;
             this.txtQueueDataValue.FillColor = System.Drawing.Color.WhiteSmoke;
             this.txtQueueDataValue.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.txtQueueDataValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -435,6 +434,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.txtQueueDataValue.SelectedText = "";
             this.txtQueueDataValue.Size = new System.Drawing.Size(345, 30);
             this.txtQueueDataValue.TabIndex = 25;
+            this.txtQueueDataValue.TabStop = false;
+            this.txtQueueDataValue.Enter += new System.EventHandler(this.txtQueueDataValue_Enter);
             // 
             // lblLaterPrintDetail
             // 
@@ -442,7 +443,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblLaterPrintDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold);
             this.lblLaterPrintDetail.Location = new System.Drawing.Point(458, 60);
             this.lblLaterPrintDetail.Name = "lblLaterPrintDetail";
-            this.lblLaterPrintDetail.Size = new System.Drawing.Size(144, 19);
+            this.lblLaterPrintDetail.Size = new System.Drawing.Size(176, 24);
             this.lblLaterPrintDetail.TabIndex = 24;
             this.lblLaterPrintDetail.Text = "Latest Print Detail :";
             // 
@@ -452,7 +453,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblCurrentData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold);
             this.lblCurrentData.Location = new System.Drawing.Point(458, 0);
             this.lblCurrentData.Name = "lblCurrentData";
-            this.lblCurrentData.Size = new System.Drawing.Size(106, 19);
+            this.lblCurrentData.Size = new System.Drawing.Size(130, 24);
             this.lblCurrentData.TabIndex = 23;
             this.lblCurrentData.Text = "Current Data :";
             // 
@@ -462,7 +463,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblWaitingPrintDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold);
             this.lblWaitingPrintDetail.Location = new System.Drawing.Point(18, 60);
             this.lblWaitingPrintDetail.Name = "lblWaitingPrintDetail";
-            this.lblWaitingPrintDetail.Size = new System.Drawing.Size(153, 19);
+            this.lblWaitingPrintDetail.Size = new System.Drawing.Size(188, 24);
             this.lblWaitingPrintDetail.TabIndex = 22;
             this.lblWaitingPrintDetail.Text = "Waiting Print Detail :";
             // 
@@ -472,7 +473,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblQueueData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold);
             this.lblQueueData.Location = new System.Drawing.Point(18, 2);
             this.lblQueueData.Name = "lblQueueData";
-            this.lblQueueData.Size = new System.Drawing.Size(100, 19);
+            this.lblQueueData.Size = new System.Drawing.Size(122, 24);
             this.lblQueueData.TabIndex = 21;
             this.lblQueueData.Text = "Queue Data :";
             // 

@@ -7,12 +7,17 @@ using System.Windows.Forms;
 using KEYENCE_inkjet_printing_control_DEMO.Class;
 using System.IO;     
 using System.Linq;       
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using Guna.UI2.WinForms;
 
 namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
     public partial class ucItem : UserControl
     {
+        [DllImport("user32.dll")]
+        static extern bool HideCaret(IntPtr hWnd);
+
         public event EventHandler ItemDeleted;
         public event EventHandler ItemEdited;
         private InkjetConfig _currentConfig;
@@ -34,6 +39,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             _fileMonitorTimer.Interval = 2000; // ตรวจสอบทุกๆ 2 วินาที
             _fileMonitorTimer.Tick += ProcessFileTimerTick;
             _fileMonitorTimer.Start();
+
+
         }
 
         // สร้างเมธอดสำหรับจัดการ Timer Tick (ทำงานแบบ async)
@@ -302,6 +309,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             btnEditManual.Visible = true;
             btnClearManual.Visible = false;
             btnSaveManual.Visible = false;
+            imgSetting.Focus();
         }
 
         private async void btnSaveManual_Click(object sender, EventArgs e)
@@ -347,6 +355,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         btnEditManual.Visible = true;
                         btnClearManual.Visible = false;
                         btnSaveManual.Visible = false;
+                        imgSetting.Focus();
                     }
 
                 }
@@ -413,6 +422,21 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             {
                 return true;
             }
+        }
+
+        private void txtCurrentData_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
+        }
+
+        private void txtQueueDataValue_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
+        }
+
+        private void txtLaterPrintDetail_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
         }
     }
 }
