@@ -37,7 +37,27 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             _fileMonitorTimer.Tick += ProcessFileTimerTick;
             _fileMonitorTimer.Start();
 
+            // ✅ สมัครรับ Event จาก Manager
+            KeyenceConnectionManager.OnStatusReceived += ConnectionManager_OnStatusReceived;
+        }
 
+        /// <summary>
+        /// เมธอดนี้จะถูกเรียกทุกครั้งที่ Manager ได้รับสถานะใหม่จากเครื่องพิมพ์ใดๆ
+        /// </summary>
+        private void ConnectionManager_OnStatusReceived(string inkjetName, string response)
+        {
+            // ตรวจสอบว่าเป็นสถานะของเครื่องพิมพ์ตัวนี้หรือไม่
+            if (_currentConfig?.InkjetName == inkjetName)
+            {
+                // response ที่ได้จากเครื่องพิมพ์จะมีรูปแบบ "SB,XX" เราจึงต้องแยกเอาเฉพาะรหัสสถานะ
+                string statusCode = response.Split(',').LastOrDefault() ?? "Unknown";
+
+                // ใช้ Invoke เพื่ออัปเดต UI อย่างปลอดภัยจาก Thread อื่น
+                this.Invoke((MethodInvoker)delegate
+                {
+                    UpdateStatus(statusCode);
+                });
+            }
         }
 
         // สร้างเมธอดสำหรับจัดการ Timer Tick (ทำงานแบบ async)
@@ -143,14 +163,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 
         public void UpdateStatus(string newStatus)
         {
-            if (_currentConfig != null)
+            if (_currentConfig != null || _currentConfig.Status == newStatus)
             {
-                // ADD THIS CHECK: If the new status is the same as the current one, do nothing.
-                if (_currentConfig.Status == newStatus)
-                {
-                    return; // Exit the method early
-                }
-
                 // --- Part 1: Update the object and UI (Existing code) ---
                 _currentConfig.Status = newStatus;
                 lblStatusValue.Text = newStatus;
