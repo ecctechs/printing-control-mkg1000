@@ -188,8 +188,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     Status = newStatus,
                     CurrentMessage = _currentConfig.LatestPrintDetail, // Use existing data
                                                                  // Populate error details if the status is "Error"
-                    ErrorDetail = newStatus == "Error" ? "An error was detected" : "",
-                    ErrorCode = newStatus == "Error" ? "E500" : ""
+                    ErrorDetail = newStatus == "Error" ? "An error was detected" : "---",
+                    ErrorCode = newStatus == "Error" ? "E500" : "---"
                 };
 
                 // ✅ Call the new manager to update this printer's status and rewrite the file.
