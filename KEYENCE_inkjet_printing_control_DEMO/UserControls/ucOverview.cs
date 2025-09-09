@@ -39,7 +39,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             return _possibleStatuses[index];
         }
 
-        public void get_item()
+        public void GetListInkjet()
         {
             flowLayoutPanel1.Controls.Clear();
             var configs = ConfigManager.Load();
@@ -59,20 +59,20 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 ucAdd.ItemAdded += OnItemChanged; 
                 flowLayoutPanel1.Controls.Add(ucAdd);
             }
-            set_item_size();
+            SetCardViewSize();
         }
 
         private void OnItemChanged(object sender, EventArgs e)
         {
-            get_item();
+            GetListInkjet();
         }
 
         private void ucOverview_Load(object sender, EventArgs e)
         {
-            get_item();
+            GetListInkjet();
         }
 
-        public void set_item_size()
+        public void SetCardViewSize()
         {
             // ปรับขนาด
             foreach (Control control in flowLayoutPanel1.Controls)
