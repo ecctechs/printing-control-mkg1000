@@ -21,7 +21,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO
         public frmMain()
         {
             InitializeComponent();
-            get_inkjet();
+            GetucOverView();
 
             var configs = ConfigManager.Load();
 
@@ -45,7 +45,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             //Console.WriteLine("Warning 101: " + codes.WarningCodes["101"]);
         }
 
-        public void get_inkjet()
+        public void GetucOverView()
         {
             ucOverview uc = new ucOverview();
             panelContainer.Dock = DockStyle.Fill;

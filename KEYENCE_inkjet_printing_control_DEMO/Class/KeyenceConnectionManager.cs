@@ -58,15 +58,13 @@ public static class KeyenceConnectionManager
 
             try
             {
-                //if (connector != null)
-                //{
+                if (connector != null)
+                {
                     if (!connector.IsConnected)
                     {
-                        Console.WriteLine("___>>" + config.IpAddress);
                         await connector.ConnectAsync(config.IpAddress, config.Port);
                     }
-                //}
-
+                 }
                 string response = await connector.SendCommandAsync("SB");
                 OnStatusReceived?.Invoke(inkjetName, response);
             }

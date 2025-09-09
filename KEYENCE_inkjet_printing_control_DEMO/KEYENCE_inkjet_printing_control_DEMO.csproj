@@ -92,7 +92,7 @@
     <Compile Include="Class\KeyenceConnectionManager.cs" />
     <Compile Include="Class\KeyencePrinterConnector.cs" />
     <Compile Include="Class\LiveStatusManager.cs" />
-    <Compile Include="Class\StatusData.cs" />
+    <Compile Include="Class\StatusMapping.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
