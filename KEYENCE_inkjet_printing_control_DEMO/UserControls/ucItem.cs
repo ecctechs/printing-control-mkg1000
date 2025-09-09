@@ -15,9 +15,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
     public partial class ucItem : UserControl
     {
-        [DllImport("user32.dll")]
-        static extern bool HideCaret(IntPtr hWnd);
-
         public event EventHandler ItemDeleted;
         public event EventHandler ItemEdited;
         private InkjetConfig _currentConfig;
