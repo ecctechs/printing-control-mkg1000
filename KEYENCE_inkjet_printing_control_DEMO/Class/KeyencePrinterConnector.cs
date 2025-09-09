@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,9 +54,10 @@ public class KeyencePrinterConnector
         //    - ถ้า Task ที่เสร็จก่อนคือ delayTask (หมดเวลา)
         //    - หรือสถานะยังไม่ใช่ Connected (กรณี IP ผิด)
         //    ให้ถือว่าการเชื่อมต่อล้มเหลว
-        if (completedTask == delayTask || !_tcpClient.Connected)
+        if (completedTask == delayTask || _tcpClient == null || !_tcpClient.Connected)
         {
-            _tcpClient.Close(); // ทำความสะอาด TcpClient ที่ล้มเหลว
+            _tcpClient?.Close(); // ป้องกัน null
+            _tcpClient = null;
             throw new TimeoutException($"การเชื่อมต่อไปยัง {ipAddress}:{port} หมดเวลาหลังจาก {timeoutMilliseconds}ms.");
         }
 
@@ -73,10 +75,16 @@ public class KeyencePrinterConnector
     public void Disconnect()
     {
         // ใช้เครื่องหมาย ?. เพื่อป้องกัน Error หาก object เป็น null
-        _stream?.Close();
-        _tcpClient?.Close();
-        _stream = null;
-        _tcpClient = null;
+        try
+        {
+            _stream?.Close();
+            _tcpClient?.Close();
+        }
+        finally
+        {
+            _stream = null;
+            _tcpClient = null;
+        }
     }
 
     /// <summary>
