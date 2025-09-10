@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public static class KeyenceConnectionManager
 {
     private static Dictionary<string, KeyencePrinterConnector> _printers = new Dictionary<string, KeyencePrinterConnector>();
-    public static event Action<string, string> OnStatusReceived;
+    public static event Action<string, List<string>> OnStatusReceived;
 
     public static void Initialize(List<InkjetConfig> configs)
     {
@@ -31,23 +31,9 @@ public static class KeyenceConnectionManager
 
     public static async Task PollAllStatusesAsync()
     {
-        // 1. โหลดการตั้งค่าล่าสุดจากไฟล์
         var latestConfigs = ConfigManager.Load();
-
-        // 2. ตรวจสอบว่ามีการเปลี่ยนแปลง Config หรือไม่ (เพิ่ม/ลบเครื่องพิมพ์)
-        var currentPrinterKeys = new HashSet<string>(_printers.Keys);
-        var latestPrinterNames = new HashSet<string>(latestConfigs.Select(c => c.InkjetName));
-
-        // 3. ถ้ามีการเปลี่ยนแปลง ให้ทำการ Initialize ใหม่
-        if (!currentPrinterKeys.SetEquals(latestPrinterNames))
-        {
-            Initialize(latestConfigs);
-        }
-
-        // ✅ 4. สร้างสำเนา (Copy) ของ Dictionary ขึ้นมาเพื่อป้องกันปัญหา Race Condition
         var printersToPoll = new Dictionary<string, KeyencePrinterConnector>(_printers);
 
-        // 5. Loop โดยใช้ "สำเนา" ที่ปลอดภัยแทน
         foreach (var pair in printersToPoll)
         {
             string inkjetName = pair.Key;
@@ -55,6 +41,8 @@ public static class KeyenceConnectionManager
             var config = latestConfigs.FirstOrDefault(c => c.InkjetName == inkjetName);
 
             if (config == null) continue;
+
+            List<string> finalStatusCodes = new List<string> { "Unknown" };
 
             try
             {
@@ -64,14 +52,46 @@ public static class KeyenceConnectionManager
                     {
                         await connector.ConnectAsync(config.IpAddress, config.Port);
                     }
-                 }
-                string response = await connector.SendCommandAsync("SB");
-                OnStatusReceived?.Invoke(inkjetName, response);
+
+                    string errorResponse = await connector.SendCommandAsync("EV");
+                    var parts = errorResponse.Split(',');
+
+                    // ✅ CORRECTED CONDITION: Check for 2 or more parts (e.g., "EV", "015")
+                    if (parts.Length >= 2 && parts[0] == "EV")
+                    {
+                        finalStatusCodes = new List<string>();
+
+                        // ✅ CORRECTED LOOP: Start from index 1 to get the codes
+                        for (int i = 1; i < parts.Length; i++)
+                        {
+                            string rawCode = parts[i].Trim();
+                            // ✅ Remove leading zeros by converting to an integer and back
+                            if (int.TryParse(rawCode, out int numericCode))
+                            {
+                                finalStatusCodes.Add(numericCode.ToString()); // "015" becomes "15"
+                            }
+                            else
+                            {
+                                finalStatusCodes.Add(rawCode); // Add as-is if not a number
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string statusResponse = await connector.SendCommandAsync("SB");
+                        string statusCode = statusResponse.Split(',').LastOrDefault()?.Trim() ?? "Unknown";
+                        finalStatusCodes = new List<string> { statusCode };
+                    }
+                }
             }
             catch (Exception)
             {
-                connector.Disconnect();
-                OnStatusReceived?.Invoke(inkjetName, "SB,Disconnected");
+                connector?.Disconnect();
+                finalStatusCodes = new List<string> { "Disconnected" };
+            }
+            finally
+            {
+                OnStatusReceived?.Invoke(inkjetName, finalStatusCodes);
             }
         }
     }

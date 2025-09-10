@@ -62,6 +62,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblWaitingPrintDetail = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblQueueData = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
+            this.lblStatusDetailValue = new System.Windows.Forms.Label();
             this.panelMain.SuspendLayout();
             this.panelDetails.SuspendLayout();
             this.panelDelete.SuspendLayout();
@@ -91,6 +92,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.panelMain.BorderColor = System.Drawing.Color.Green;
             this.panelMain.BorderRadius = 25;
             this.panelMain.BorderThickness = 4;
+            this.panelMain.Controls.Add(this.lblStatusDetailValue);
             this.panelMain.Controls.Add(this.circleStatus);
             this.panelMain.Controls.Add(this.lblStatusValue);
             this.panelMain.Controls.Add(this.lblStatus);
@@ -477,6 +479,17 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblQueueData.TabIndex = 21;
             this.lblQueueData.Text = "Queue Data :";
             // 
+            // lblStatusDetailValue
+            // 
+            this.lblStatusDetailValue.AutoEllipsis = true;
+            this.lblStatusDetailValue.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatusDetailValue.Location = new System.Drawing.Point(18, 103);
+            this.lblStatusDetailValue.Name = "lblStatusDetailValue";
+            this.lblStatusDetailValue.Size = new System.Drawing.Size(335, 24);
+            this.lblStatusDetailValue.TabIndex = 33;
+            this.lblStatusDetailValue.Text = "label1";
+            this.lblStatusDetailValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ucItem
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -529,5 +542,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         private Guna.UI2.WinForms.Guna2ImageButton btnClearManual;
         public Guna.UI2.WinForms.Guna2HtmlLabel lblError;
         public Guna.UI2.WinForms.Guna2HtmlLabel lblErrorManual;
+        private Label lblStatusDetailValue;
     }
 }
