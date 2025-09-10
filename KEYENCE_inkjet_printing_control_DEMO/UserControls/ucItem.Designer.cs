@@ -36,6 +36,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.panelPaddingLeft = new System.Windows.Forms.Panel();
             this.panelPaddingRight = new System.Windows.Forms.Panel();
             this.panelMain = new Guna.UI2.WinForms.Guna2GradientPanel();
+            this.lblStatusDetailValue = new System.Windows.Forms.Label();
             this.circleStatus = new Guna.UI2.WinForms.Guna2CircleButton();
             this.lblStatusValue = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblStatus = new Guna.UI2.WinForms.Guna2HtmlLabel();
@@ -62,7 +63,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblWaitingPrintDetail = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblQueueData = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
-            this.lblStatusDetailValue = new System.Windows.Forms.Label();
             this.panelMain.SuspendLayout();
             this.panelDetails.SuspendLayout();
             this.panelDelete.SuspendLayout();
@@ -109,6 +109,18 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1270, 139);
             this.panelMain.TabIndex = 2;
+            // 
+            // lblStatusDetailValue
+            // 
+            this.lblStatusDetailValue.AutoEllipsis = true;
+            this.lblStatusDetailValue.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatusDetailValue.Location = new System.Drawing.Point(18, 103);
+            this.lblStatusDetailValue.Name = "lblStatusDetailValue";
+            this.lblStatusDetailValue.Size = new System.Drawing.Size(335, 24);
+            this.lblStatusDetailValue.TabIndex = 33;
+            this.lblStatusDetailValue.Text = "label1";
+            this.lblStatusDetailValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblStatusDetailValue.Visible = false;
             // 
             // circleStatus
             // 
@@ -478,17 +490,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblQueueData.Size = new System.Drawing.Size(122, 24);
             this.lblQueueData.TabIndex = 21;
             this.lblQueueData.Text = "Queue Data :";
-            // 
-            // lblStatusDetailValue
-            // 
-            this.lblStatusDetailValue.AutoEllipsis = true;
-            this.lblStatusDetailValue.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatusDetailValue.Location = new System.Drawing.Point(18, 103);
-            this.lblStatusDetailValue.Name = "lblStatusDetailValue";
-            this.lblStatusDetailValue.Size = new System.Drawing.Size(335, 24);
-            this.lblStatusDetailValue.TabIndex = 33;
-            this.lblStatusDetailValue.Text = "label1";
-            this.lblStatusDetailValue.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ucItem
             // 

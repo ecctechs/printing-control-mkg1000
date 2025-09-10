@@ -234,6 +234,12 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             lblStatusDetailValue.Text = mainDetail;     // โชว์รายละเอียดสั้น ๆ
             SetStatusColor(mainCategory);
 
+            // --- ตั้ง Visible ตาม Category ---
+            if (mainCategory == "Error" || mainCategory == "Warning")
+                lblStatusDetailValue.Visible = true;
+            else
+                lblStatusDetailValue.Visible = false;
+
             // --- Tooltip แสดงรายละเอียดทั้งหมด ---
             string detail = string.Join(Environment.NewLine, tooltipList);
             ToolTip tt = new ToolTip();
