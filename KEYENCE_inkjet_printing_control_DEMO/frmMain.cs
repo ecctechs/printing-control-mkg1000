@@ -26,23 +26,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             var configs = ConfigManager.Load();
 
             LiveStatusManager.Initialize(configs);
-
-            //string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "keyence_status_codes.json");
-
-            //if (!File.Exists(jsonPath))
-            //{
-            //    Console.WriteLine("ไม่พบไฟล์ JSON ที่: " + jsonPath);
-            //    return;
-            //}
-
-            //// อ่านไฟล์เป็น UTF-8
-            //string jsonString = File.ReadAllText(jsonPath, Encoding.UTF8);
-            //StatusData codes = JsonConvert.DeserializeObject<StatusData>(jsonString);
-
-            //// แสดงผล
-            //Console.WriteLine("Status 01: " + codes.StatusCodes["01"]);
-            //Console.WriteLine("Error 02: " + codes.ErrorCodes["02"]);
-            //Console.WriteLine("Warning 101: " + codes.WarningCodes["101"]);
         }
 
         public void GetucOverView()

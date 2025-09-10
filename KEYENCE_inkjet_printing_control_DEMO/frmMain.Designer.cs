@@ -173,10 +173,10 @@
             this.lblCloseForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCloseForm.BackColor = System.Drawing.Color.Transparent;
             this.lblCloseForm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCloseForm.Location = new System.Drawing.Point(1250, -3);
+            this.lblCloseForm.Location = new System.Drawing.Point(1250, -2);
             this.lblCloseForm.Margin = new System.Windows.Forms.Padding(4);
             this.lblCloseForm.Name = "lblCloseForm";
-            this.lblCloseForm.Size = new System.Drawing.Size(14, 22);
+            this.lblCloseForm.Size = new System.Drawing.Size(17, 27);
             this.lblCloseForm.TabIndex = 0;
             this.lblCloseForm.Text = "X";
             this.lblCloseForm.Click += new System.EventHandler(this.lblCloseForm_Click);
@@ -189,7 +189,7 @@
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 680);
             this.Controls.Add(this.pannelMain);
