@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 public static class KeyenceConnectionManager
 {
     private static Dictionary<string, KeyencePrinterConnector> _printers = new Dictionary<string, KeyencePrinterConnector>();
-    public static event Action<string, List<string>> OnStatusReceived;
+    public static event Action<string, List<string>, string> OnStatusReceived;
 
     public static void Initialize(List<InkjetConfig> configs)
     {
@@ -33,13 +33,13 @@ public static class KeyenceConnectionManager
     {
         var latestConfigs = ConfigManager.Load();
         var printersToPoll = new Dictionary<string, KeyencePrinterConnector>(_printers);
-
+        string type = "System";
         foreach (var pair in printersToPoll)
         {
             string inkjetName = pair.Key;
             var connector = pair.Value;
             var config = latestConfigs.FirstOrDefault(c => c.InkjetName == inkjetName);
-
+   
             if (config == null) continue;
 
             List<string> finalStatusCodes = new List<string> { "Unknown" };
@@ -59,6 +59,7 @@ public static class KeyenceConnectionManager
                     // ✅ CORRECTED CONDITION: Check for 2 or more parts (e.g., "EV", "015")
                     if (parts.Length >= 2 && parts[0] == "EV")
                     {
+                        type = "EV";
                         finalStatusCodes = new List<string>();
 
                         // ✅ CORRECTED LOOP: Start from index 1 to get the codes
@@ -78,6 +79,7 @@ public static class KeyenceConnectionManager
                     }
                     else
                     {
+                        type = "SB";
                         string statusResponse = await connector.SendCommandAsync("SB");
                         string statusCode = statusResponse.Split(',').LastOrDefault()?.Trim() ?? "Unknown";
                         finalStatusCodes = new List<string> { statusCode };
@@ -91,7 +93,7 @@ public static class KeyenceConnectionManager
             }
             finally
             {
-                OnStatusReceived?.Invoke(inkjetName, finalStatusCodes);
+                OnStatusReceived?.Invoke(inkjetName, finalStatusCodes, type);
             }
         }
     }

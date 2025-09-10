@@ -13,6 +13,8 @@ using Guna.UI2.WinForms;
 using System.Collections.Generic;
 using StatusMapping;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Windows.Interop;
+using System.Diagnostics.Eventing.Reader;
 
 namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
@@ -62,13 +64,13 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         /// <summary>
         /// เมธอดนี้จะถูกเรียกทุกครั้งที่ Manager ได้รับสถานะใหม่จากเครื่องพิมพ์ใดๆ
         /// </summary>
-        private void ConnectionManager_OnStatusReceived(string inkjetName, List<string> statusCodes)
+        private void ConnectionManager_OnStatusReceived(string inkjetName, List<string> statusCodes , string type)
         {
             if (_currentConfig?.InkjetName == inkjetName)
             {
                 this.Invoke((MethodInvoker)delegate
                 {
-                    UpdateStatus(statusCodes);
+                    UpdateStatus(statusCodes , type);
                 });
             }
         }
@@ -174,17 +176,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             txtWaitingPrintDetail.Text = config.LatestPrintDetail;
         }
 
-        private string MapCategory(string msg)
-        {
-            if (msg.StartsWith("[ERROR]")) return "Error";
-            if (msg.StartsWith("[WARNING]")) return "Warning";
-            if (msg.StartsWith("[STOP]")) return "Stop";
-            if (msg.StartsWith("[SUSPENDED]")) return "Suspended";
-            if (msg.StartsWith("[DISCONNECTED]")) return "Disconnected";
-            return "Printable"; // Default
-        }
-
-        public void UpdateStatus(List<string> statusCodes)
+        public void UpdateStatus(List<string> statusCodes , string type)
         {
             if (_currentConfig == null) return;
 
@@ -192,53 +184,77 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             var mapping = new LoadMapping();
             mapping.Load(jsonPath);
 
-            string mainCategory = "Printable";
+            string mainCategory = "Unknown";
             string mainDetail = "Unknown";
             List<string> tooltipList = new List<string>();
 
             foreach (var code in statusCodes)
             {
                 string trimmed = code.Trim();
-                string msg = mapping.GetStatus(trimmed);
+                string msg = mapping.GetStatus(trimmed, type);
+
+                //Console.WriteLine(trimmed + "  " + msg);
 
                 // เก็บรายละเอียดทั้งหมดสำหรับ tooltip
                 tooltipList.Add($"{trimmed}: {msg}");
 
-                // เลือก Category หลักและรายละเอียดสั้น
-                string category = MapCategory(msg);
-
-                if (category == "Error" && mainCategory != "Error")
+                // --- Mapping ด้วยช่วงของรหัส ---
+                int codeNum;
+                if (int.TryParse(trimmed, out codeNum))
                 {
-                    mainCategory = "Error";
-                    mainDetail = msg.Replace("[ERROR]", "").Trim();
+                    if (codeNum >= 1 && codeNum <= 99 && type == "EV") // Error
+                    {
+                        if (mainCategory != "Error")
+                        {
+                            mainCategory = "Error";
+                            mainDetail = msg.Trim();
+                        }
+                    }
+                    else if (codeNum >= 101 && codeNum <= 192 && type == "EV") // Warning
+                    {
+                        if (mainCategory != "Error" && mainCategory != "Warning")
+                        {
+                            mainCategory = "Warning";
+                            mainDetail = msg.Trim();
+                        }
+                    }
+                    else
+                    {
+                        if(codeNum == 04)
+                        {
+                            mainCategory = "Suspended";
+                        }
+                        else if(codeNum == 05)
+                        {
+                            mainCategory = "Starting";
+                        }
+                        else if(codeNum == 06)
+                        {
+                            mainCategory = "Shutting Down";
+                        }
+                        else if (codeNum == 01)
+                        {
+                            mainCategory = "Printable";
+                        }
+                        else
+                        {
+                            mainCategory = "Stopped";
+                        }
+                    }
                 }
-                else if (category == "Warning" && mainCategory != "Error" && mainCategory != "Warning")
+                else
                 {
-                    mainCategory = "Warning";
-                    mainDetail = msg.Replace("[WARNING]", "").Trim();
-                }
-                else if (mainCategory == "Printable" && category == "Printable")
-                {
-                    mainDetail = msg.Replace("[STATUS]", "").Trim();
-                }
-                // ถ้า Stop / Suspended / Disconnected ให้ override
-                else if (category == "Stop" || category == "Suspended" || category == "Disconnected")
-                {
-                    mainCategory = category;
-                    mainDetail = msg.Replace($"[{category.ToUpper()}]", "").Trim();
+                    mainCategory = "Disconnect";
                 }
             }
 
             // --- Update UI ---
-            lblStatusValue.Text = mainCategory;         // โชว์ Category หลัก
-            lblStatusDetailValue.Text = mainDetail;     // โชว์รายละเอียดสั้น ๆ
+            lblStatusValue.Text = mainCategory;
+            lblStatusDetailValue.Text = mainDetail;
             SetStatusColor(mainCategory);
 
             // --- ตั้ง Visible ตาม Category ---
-            if (mainCategory == "Error" || mainCategory == "Warning")
-                lblStatusDetailValue.Visible = true;
-            else
-                lblStatusDetailValue.Visible = false;
+            lblStatusDetailValue.Visible = (mainCategory == "Error" || mainCategory == "Warning");
 
             // --- Tooltip แสดงรายละเอียดทั้งหมด ---
             string detail = string.Join(Environment.NewLine, tooltipList);
@@ -252,50 +268,33 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 Timestamp = DateTime.Now,
                 InkjetName = _currentConfig.InkjetName,
                 Status = mainCategory,
-                CurrentMessage = _currentConfig.LatestPrintDetail,
+                CurrentMessage = _currentConfig.LatestPrintDetail
+            };
+            // ทำ ErrorDetail / ErrorCode เฉพาะกรณี EV
+            if (type == "EV")
+            {
+                var details = statusCodes
+                    .Select(code => mapping.GetStatus(code.Trim(), type))
+                    .Select(msg => msg
+                        .Replace("[ERROR]", "")
+                        .Replace("[WARNING]", "")
+                        .Replace("[STATUS]", "")
+                        .Trim())
+                    .ToList();
 
-                // ErrorDetail: รวมรายละเอียดทั้งหมด คั่นด้วย comma และครอบด้วย [ ]
-                ErrorDetail = "\"" + "[" + string.Join(",", statusCodes.Select(code =>
-                {
-                    string msg = mapping.GetStatus(code.Trim());
-                    return msg.Replace("[ERROR]", "").Replace("[WARNING]", "").Replace("[STATUS]", "").Trim();
-                })) + "]\"",
+                var codes = statusCodes.Select(code => code.Trim()).ToList();
 
-                // ErrorCode: รวมรหัสทั้งหมด คั่นด้วย comma และครอบด้วย [ ]
-                ErrorCode = "\"" + "[" + string.Join(",", statusCodes.Select(code => code.Trim())) + "]\""
-            }; 
+                currentStatus.ErrorDetail = $"\"[{string.Join(",", details)}]\"";
+                currentStatus.ErrorCode = $"\"[{string.Join(",", codes)}]\"";
+            }
+            else
+            {
+                currentStatus.ErrorDetail = "---";
+                currentStatus.ErrorCode = "---";
+            }
+
             LiveStatusManager.UpdateAndSaveStatus(currentStatus);
         }
-
-        //public void UpdateStatus(string newStatus)
-        //{
-        //    if (_currentConfig != null || _currentConfig.Status == newStatus)
-        //    {
-        //        // --- Update the object and UI (Existing code) ---
-        //        _currentConfig.Status = newStatus;
-        //        lblStatusValue.Text = newStatus;
-        //        SetStatusColor(newStatus);
-
-        //        string message = $"Status changed to '{newStatus}'";
-
-        //        string loadedStatusCsvPath = AppSettings.LoadAppSettings();
-
-        //        // --- Create a new status object to send to the manager ---
-        //        var currentStatus = new CurrentInkjetStatus
-        //        {
-        //            Timestamp = DateTime.Now,
-        //            InkjetName = _currentConfig.InkjetName,
-        //            Status = newStatus,
-        //            CurrentMessage = _currentConfig.LatestPrintDetail, // Use existing data
-        //                                                               // Populate error details if the status is "Error"
-        //            ErrorDetail = newStatus == "Error" ? "An error was detected" : "---",
-        //            ErrorCode = newStatus == "Error" ? "E500" : "---"
-        //        };
-
-        //        // ✅ Call the new manager to update this printer's status and rewrite the file.
-        //        LiveStatusManager.UpdateAndSaveStatus(currentStatus);
-        //    }
-        //}
 
         private void SetStatusColor(string status)
         {

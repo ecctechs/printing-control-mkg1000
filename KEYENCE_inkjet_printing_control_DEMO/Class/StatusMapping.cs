@@ -30,41 +30,26 @@ namespace StatusMapping
         }
 
         // คืนข้อความสถานะตามรหัส (ค้นหาจากทุก section)
-        public string GetStatus(string code)
+        public string GetStatus(string code, string type)
         {
             if (_statusData == null)
-                throw new InvalidOperationException("กรุณาเรียกใช้ Load() ก่อน");
+                return "[UNKNOWN] Mapping not loaded";
 
-            if (_statusData.StatusCodes != null && _statusData.StatusCodes.TryGetValue(code, out var status))
-                return $"[STATUS] {status}";
+            if (type == "EV")
+            {
+                if (_statusData.ErrorCodes != null && _statusData.ErrorCodes.ContainsKey(code))
+                    return  _statusData.ErrorCodes[code];
 
-            if (_statusData.ErrorCodes != null && _statusData.ErrorCodes.TryGetValue(code, out var error))
-                return $"[ERROR] {error}";
+                if (_statusData.WarningCodes != null && _statusData.WarningCodes.ContainsKey(code))
+                    return _statusData.WarningCodes[code];
+            }
+            else if (type == "SB")
+            {
+                if (_statusData.StatusCodes != null && _statusData.StatusCodes.ContainsKey(code))
+                    return  _statusData.StatusCodes[code];
+            }
 
-            if (_statusData.WarningCodes != null && _statusData.WarningCodes.TryGetValue(code, out var warning))
-                return $"[WARNING] {warning}";
-
-            return $"Unknown code: {code}";
-        }
-
-        public static string MapCategory(string msg)
-        {
-            if (msg.StartsWith("[ERROR]"))
-                return "Error";
-
-            if (msg.StartsWith("[WARNING]"))
-                return "Warning";
-
-            if (msg.Contains("Stop"))
-                return "Stop";
-
-            if (msg.Contains("Suspended") || msg.Contains("Pause"))
-                return "Suspended";
-
-            if (msg.Contains("Disconnected") || msg.Contains("disconnection"))
-                return "Disconnected";
-
-            return "Printable";
+            return "[UNKNOWN] Code not found";
         }
 
     }
