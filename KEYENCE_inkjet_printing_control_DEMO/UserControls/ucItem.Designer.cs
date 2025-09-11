@@ -114,7 +114,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             // 
             this.lblStatusDetailValue.AutoEllipsis = true;
             this.lblStatusDetailValue.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblStatusDetailValue.Location = new System.Drawing.Point(18, 103);
+            this.lblStatusDetailValue.Location = new System.Drawing.Point(14, 103);
             this.lblStatusDetailValue.Name = "lblStatusDetailValue";
             this.lblStatusDetailValue.Size = new System.Drawing.Size(335, 24);
             this.lblStatusDetailValue.TabIndex = 33;

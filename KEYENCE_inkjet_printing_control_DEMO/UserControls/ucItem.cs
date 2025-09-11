@@ -38,7 +38,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             InitializeLeftEdgePanel();
             SetPanel3RoundedCorners(panelDetails, 50);
 
-            // ✅ 5. ตั้งค่าและเริ่มการทำงานของ Timer
+            // ✅ ตั้งค่าและเริ่มการทำงานของ Timer
             _fileMonitorTimer = new Timer();
             _fileMonitorTimer.Interval = 2000; // ตรวจสอบทุกๆ 2 วินาที
             _fileMonitorTimer.Tick += ProcessFileTimerTick;
@@ -47,18 +47,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             // ✅ สมัครรับ Event จาก Manager
             KeyenceConnectionManager.OnStatusReceived += ConnectionManager_OnStatusReceived;
 
-            _mapping = new LoadMapping();
-
-            // โหลด JSON ตอนเริ่มโปรแกรม
             string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "status_mapping.json");
-            
-            // โหลด JSON
-            bool loaded = _mapping.Load(jsonPath);
-
-            if (!loaded)
-            {
-                MessageBox.Show("ไม่พบไฟล์ status_mapping.json", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            _mapping = new LoadMapping();
+            _mapping.Load(jsonPath);
         }
 
         /// <summary>
@@ -180,10 +171,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         {
             if (_currentConfig == null) return;
 
-            string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "status_mapping.json");
-            var mapping = new LoadMapping();
-            mapping.Load(jsonPath);
-
             string mainCategory = "Unknown";
             string mainDetail = "Unknown";
             List<string> tooltipList = new List<string>();
@@ -191,7 +178,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             foreach (var code in statusCodes)
             {
                 string trimmed = code.Trim();
-                string msg = mapping.GetStatus(trimmed, type);
+                string msg = _mapping.GetStatus(trimmed, type);
 
                 //Console.WriteLine(trimmed + "  " + msg);
 
@@ -274,7 +261,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             if (type == "EV")
             {
                 var details = statusCodes
-                    .Select(code => mapping.GetStatus(code.Trim(), type))
+                    .Select(code => _mapping.GetStatus(code.Trim(), type))
                     .Select(msg => msg
                         .Replace("[ERROR]", "")
                         .Replace("[WARNING]", "")
