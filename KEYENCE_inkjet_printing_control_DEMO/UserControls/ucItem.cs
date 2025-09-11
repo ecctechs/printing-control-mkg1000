@@ -15,6 +15,7 @@ using StatusMapping;
 using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Windows.Interop;
 using System.Diagnostics.Eventing.Reader;
+using Guna.UI2.WinForms.Suite;
 
 namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
@@ -47,9 +48,10 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             // ✅ สมัครรับ Event จาก Manager
             KeyenceConnectionManager.OnStatusReceived += ConnectionManager_OnStatusReceived;
 
-            string jsonPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "status_mapping.json");
+            // Load Status Mapping 
             _mapping = new LoadMapping();
-            _mapping.Load(jsonPath);
+            _mapping.LoadStatus();
+            _mapping.LoadCommunicationError();
         }
 
         /// <summary>
@@ -80,9 +82,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             try
             {
                 var txtFile = Directory.GetFiles(_currentConfig.InputDirectory, "*.txt").FirstOrDefault();
-
                 if (txtFile != null) // --- ถ้าเจอไฟล์ ---
                 {
+                
                     _isProcessingFile = true;
 
                     var processTime = DateTime.Now;
@@ -96,9 +98,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // รอ 10 วิ (จำลองหน่วงเวลา)
                     await Task.Delay(10000);
 
-                    bool validateSendError = await SimulateError(fileName,"Auto");
+                    var isSendSuccess = await KeyenceConnectionManager.SendMessageAsync(_currentConfig.InkjetName, fileContent);
 
-                    if (validateSendError)
+                    if (isSendSuccess.Success)
                     {
                         txtLaterPrintDetail.BorderColor = Color.Black;
                         lblError.Visible = false;
@@ -137,7 +139,28 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         txtCurrentData.Text = "Waiting Data From Server";
                         txtLaterPrintDetail.Text = "";
                         _isProcessingFile = false;
-                    }                
+                    }
+                    else
+                    {
+                        string lastPart = isSendSuccess.ErrorCode?.Split(',').Last(); // "22"
+                        // สมมติว่า errorCode มาจากเครื่อง (ในที่นี้อาจเป็น "01" หรือ "90" เป็นต้น)
+                        string errorCode = lastPart; // TODO: ดึงจากผลลัพธ์จริง
+                        var error = _mapping.GetCommunicationErrorByCode(errorCode);
+
+                        lblError.Visible = true;
+                        txtLaterPrintDetail.BorderColor = Color.Red;
+
+                        if (error != null)
+                        {
+                            lblError.Text = $"❌ ERROR [{lastPart}] {error.Description}";
+                        }
+                        else
+                        {
+                            lblError.Text = $"❌ ERROR [{lastPart}] ไม่พบรายละเอียดใน mapping";
+                        }
+
+                        _isProcessingFile = false;
+                    }             
                 }
                 else
                 {
@@ -424,9 +447,10 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // Create the log entry with the "Manual" type
                     string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Manual,{contentToLog.Replace(Environment.NewLine, " ")}";
 
-                    bool validateSendError = await SimulateError(contentToLog,"manual");
-                  
-                    if (validateSendError)
+                    // ส่งข้อความไป Keyence
+                    var isSendSuccess = await KeyenceConnectionManager.SendMessageAsync(_currentConfig.InkjetName, contentToLog);
+
+                    if (isSendSuccess.Success)
                     {
                         lblErrorManual.Visible = false;
                         txtWaitingPrintDetail.BorderColor = Color.Black;
@@ -436,6 +460,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 
                         _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
                         ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+
                         txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
                         txtWaitingPrintDetail.ReadOnly = true;
                         btnEditManual.Visible = true;
@@ -443,70 +468,23 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         btnSaveManual.Visible = false;
                         imgSetting.Focus();
                     }
+                    else
+                    {
+                        // ❌ ส่งไม่สำเร็จ ดึง ErrorCode ตัวสุดท้าย
+                        string lastPart = isSendSuccess.ErrorCode?.Split(',').Last();
+                        var error = _mapping.GetCommunicationErrorByCode(lastPart);
 
+                        lblErrorManual.Visible = true;
+                        txtWaitingPrintDetail.BorderColor = Color.Red;
+                        lblErrorManual.Text = error != null
+                            ? $"❌ ERROR [{lastPart}] {error.Description}"
+                            : $"❌ ERROR [{lastPart}] ไม่พบรายละเอียดใน mapping";
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("เกิดข้อผิดพลาดในการบันทึก Log: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-            }
-        }
-
-        public async Task<bool> SimulateError(string errorName, string type)
-        {
-            var currentStatus = new CurrentInkjetStatus { };
-            // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-            if (errorName.Contains("ER"))
-            {
-                await Task.Run(() =>
-                {
-                    // --- Create a new status object to send to the manager ---
-                    if (type == "Auto")
-                    {
-                         currentStatus = new CurrentInkjetStatus
-                        {
-                            Timestamp = DateTime.Now,
-                            InkjetName = _currentConfig.InkjetName,
-                            ErrorDetail = "Send_Data_Fail_Auto",
-                            ErrorCode = "E100"
-                        };
-
-                        // แจ้ง UI ว่าเกิด Error (ต้องใช้ Invoke เพราะเราอยู่ใน async event)
-                        this.Invoke((MethodInvoker)(() =>
-                        {
-                            lblError.Visible = true;
-                            txtLaterPrintDetail.BorderColor = Color.Red;
-                            lblError.Text = $"❌ ERROR [ {errorName} ]";
-                        }));
-                    }
-                    else
-                    {
-                         currentStatus = new CurrentInkjetStatus
-                        {
-                            Timestamp = DateTime.Now,
-                            InkjetName = _currentConfig.InkjetName,
-                            ErrorDetail = "Send_Data_Fail_Manual",
-                            ErrorCode = "E200"
-                        };
-                        this.Invoke((MethodInvoker)(() =>
-                        {
-                            lblErrorManual.Visible = true;
-                            txtWaitingPrintDetail.BorderColor = Color.Red;
-                            lblErrorManual.Text = $"❌ ERROR [ {errorName} ]";
-                        }));
-                    }
-                    // ✅ Call the new manager to update this printer's status and rewrite the file.
-                    LiveStatusManager.UpdateAndSaveStatus(currentStatus);
-                });
-
-                // ตั้งสถานะให้พร้อมรับไฟล์ใหม่ (ไม่ลบไฟล์ และไม่อัพเดตอื่น ๆ)
-                _isProcessingFile = false;
-                // ออกจากเมธอดไม่ทำงานต่อ
-                return false;
-            }
-            else
-            {
-                return true;
             }
         }
 

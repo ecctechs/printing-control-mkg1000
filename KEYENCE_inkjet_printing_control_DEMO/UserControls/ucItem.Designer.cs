@@ -47,7 +47,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.imgSetting = new Guna.UI2.WinForms.Guna2ImageButton();
             this.panelDetails = new System.Windows.Forms.Panel();
             this.lblErrorManual = new Guna.UI2.WinForms.Guna2HtmlLabel();
-            this.lblError = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.btnSaveManual = new Guna.UI2.WinForms.Guna2ImageButton();
             this.btnClearManual = new Guna.UI2.WinForms.Guna2ImageButton();
             this.btnEditManual = new Guna.UI2.WinForms.Guna2ImageButton();
@@ -63,6 +62,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblWaitingPrintDetail = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblQueueData = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
+            this.lblError = new System.Windows.Forms.Label();
             this.panelMain.SuspendLayout();
             this.panelDetails.SuspendLayout();
             this.panelDelete.SuspendLayout();
@@ -218,8 +218,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             // 
             this.panelDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelDetails.BackColor = System.Drawing.Color.White;
-            this.panelDetails.Controls.Add(this.lblErrorManual);
             this.panelDetails.Controls.Add(this.lblError);
+            this.panelDetails.Controls.Add(this.lblErrorManual);
             this.panelDetails.Controls.Add(this.btnSaveManual);
             this.panelDetails.Controls.Add(this.btnClearManual);
             this.panelDetails.Controls.Add(this.btnEditManual);
@@ -243,24 +243,12 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblErrorManual.BackColor = System.Drawing.Color.Transparent;
             this.lblErrorManual.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblErrorManual.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lblErrorManual.Location = new System.Drawing.Point(623, 60);
+            this.lblErrorManual.Location = new System.Drawing.Point(619, 60);
             this.lblErrorManual.Name = "lblErrorManual";
             this.lblErrorManual.Size = new System.Drawing.Size(116, 24);
             this.lblErrorManual.TabIndex = 36;
             this.lblErrorManual.Text = "ER DETECT";
             this.lblErrorManual.Visible = false;
-            // 
-            // lblError
-            // 
-            this.lblError.BackColor = System.Drawing.Color.Transparent;
-            this.lblError.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblError.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.lblError.Location = new System.Drawing.Point(197, 60);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(116, 24);
-            this.lblError.TabIndex = 35;
-            this.lblError.Text = "ER DETECT";
-            this.lblError.Visible = false;
             // 
             // btnSaveManual
             // 
@@ -491,6 +479,18 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblQueueData.TabIndex = 21;
             this.lblQueueData.Text = "Queue Data :";
             // 
+            // lblError
+            // 
+            this.lblError.AutoEllipsis = true;
+            this.lblError.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblError.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.lblError.Location = new System.Drawing.Point(173, 61);
+            this.lblError.Name = "lblError";
+            this.lblError.Size = new System.Drawing.Size(195, 21);
+            this.lblError.TabIndex = 37;
+            this.lblError.Text = "label1";
+            this.lblError.Visible = false;
+            // 
             // ucItem
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -541,8 +541,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         private Guna.UI2.WinForms.Guna2CircleButton circleStatus;
         private Guna.UI2.WinForms.Guna2ImageButton btnSaveManual;
         private Guna.UI2.WinForms.Guna2ImageButton btnClearManual;
-        public Guna.UI2.WinForms.Guna2HtmlLabel lblError;
         public Guna.UI2.WinForms.Guna2HtmlLabel lblErrorManual;
         private Label lblStatusDetailValue;
+        private Label lblError;
     }
 }

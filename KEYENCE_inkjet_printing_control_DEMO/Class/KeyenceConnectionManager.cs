@@ -9,6 +9,12 @@ public static class KeyenceConnectionManager
     private static Dictionary<string, KeyencePrinterConnector> _printers = new Dictionary<string, KeyencePrinterConnector>();
     public static event Action<string, List<string>, string> OnStatusReceived;
 
+    public class SendResult
+    {
+        public bool Success { get; set; }
+        public string ErrorCode { get; set; }
+    }
+
     public static void Initialize(List<InkjetConfig> configs)
     {
         var newPrinterNames = configs.Select(c => c.InkjetName).ToList();
@@ -28,6 +34,72 @@ public static class KeyenceConnectionManager
             }
         }
     }
+
+    /// <summary>
+    /// ส่งข้อความ (Print Data) ไปยังเครื่องพิมพ์ Inkjet ที่ระบุ
+    /// </summary>
+    /// <param name="inkjetName">ชื่อของเครื่องพิมพ์ Inkjet เป้าหมาย</param>
+    /// <param name="message">ข้อความที่ต้องการส่งไปพิมพ์</param>
+    /// <returns>คืนค่า true หากส่งสำเร็จ, มิฉะนั้นคืนค่า false</returns>
+    public static async Task<SendResult> SendMessageAsync(string inkjetName, string message)
+    {
+        var result = new SendResult();
+
+        // ตรวจสอบว่ามีเครื่องพิมพ์ชื่อนี้ใน Manager หรือไม่
+        if (!_printers.TryGetValue(inkjetName, out var connector))
+        {
+            result.Success = false;
+            result.ErrorCode = $"No printer found with name '{inkjetName}'";
+            Console.WriteLine(result.ErrorCode);
+            return result;
+        }
+
+        // โหลด Config ล่าสุดสำหรับเครื่องพิมพ์นี้
+        var config = ConfigManager.Load().FirstOrDefault(c => c.InkjetName == inkjetName);
+        if (config == null)
+        {
+            result.Success = false;
+            result.ErrorCode = $"No config found for printer '{inkjetName}'";
+            Console.WriteLine(result.ErrorCode);
+            return result;
+        }
+
+        try
+        {
+            // เชื่อมต่อถ้ายังไม่เชื่อม
+            if (!connector.IsConnected)
+            {
+                await connector.ConnectAsync(config.IpAddress, config.Port);
+            }
+
+            string command = $"BK,1,0,{message}";
+            string response = await connector.SendCommandAsync(command);
+
+            if (response.StartsWith("ER"))
+            {
+                result.Success = false;
+                result.ErrorCode = response;
+                Console.WriteLine($"Error Send Text {inkjetName}: {response}");
+            }
+            else
+            {
+                result.Success = true;
+                result.ErrorCode = null;
+                Console.WriteLine($"Send Text : '{message}' To {inkjetName} Success, Response: {response}");
+            }
+
+            return result;
+        }
+        catch (Exception ex)
+        {
+            result.Success = false;
+            result.ErrorCode = ex.Message;
+            Console.WriteLine($"Exception sending message to {inkjetName}: {ex.Message}");
+            connector?.Disconnect();
+            return result;
+        }
+    }
+
 
     public static async Task PollAllStatusesAsync()
     {
