@@ -16,6 +16,7 @@ using static System.Runtime.CompilerServices.RuntimeHelpers;
 using System.Windows.Interop;
 using System.Diagnostics.Eventing.Reader;
 using Guna.UI2.WinForms.Suite;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
@@ -295,12 +296,12 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 
                 var codes = statusCodes.Select(code => code.Trim()).ToList();
 
-                currentStatus.ErrorDetail = details.Count > 1
+                currentStatus.ErrorDetail = string.Join(",", details) != "---"
                 ? $"\"[{string.Join(",", details)}]\""
                 : "---";
-                currentStatus.ErrorCode = codes.Count > 1
-                ? $"\"[{string.Join(",", codes)}]\""
-    :           "---";
+                currentStatus.ErrorCode = string.Join(",", details) != "---"
+                ? $"\"[{string.Join(",", details)}]\""
+                : "---";
             }
             else
             {
