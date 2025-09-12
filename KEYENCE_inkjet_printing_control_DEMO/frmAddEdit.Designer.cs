@@ -313,7 +313,7 @@
             this.txtPort.BorderColor = System.Drawing.Color.Black;
             this.txtPort.BorderRadius = 5;
             this.txtPort.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtPort.DefaultText = "";
+            this.txtPort.DefaultText = "9004";
             this.txtPort.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
             this.txtPort.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
             this.txtPort.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));

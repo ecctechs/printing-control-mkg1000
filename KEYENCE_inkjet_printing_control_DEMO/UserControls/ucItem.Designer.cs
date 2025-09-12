@@ -235,7 +235,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.panelDetails.Controls.Add(this.lblQueueData);
             this.panelDetails.Location = new System.Drawing.Point(375, 3);
             this.panelDetails.Name = "panelDetails";
-            this.panelDetails.Size = new System.Drawing.Size(892, 130);
+            this.panelDetails.Size = new System.Drawing.Size(892, 129);
             this.panelDetails.TabIndex = 20;
             // 
             // lblError
@@ -272,7 +272,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.btnSaveManual.ImageOffset = new System.Drawing.Point(0, 0);
             this.btnSaveManual.ImageRotate = 0F;
             this.btnSaveManual.ImageSize = new System.Drawing.Size(20, 20);
-            this.btnSaveManual.Location = new System.Drawing.Point(840, 85);
+            this.btnSaveManual.Location = new System.Drawing.Point(840, 84);
             this.btnSaveManual.Name = "btnSaveManual";
             this.btnSaveManual.PressedState.ImageSize = new System.Drawing.Size(64, 64);
             this.btnSaveManual.Size = new System.Drawing.Size(36, 31);
@@ -290,7 +290,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.btnClearManual.ImageOffset = new System.Drawing.Point(0, 0);
             this.btnClearManual.ImageRotate = 0F;
             this.btnClearManual.ImageSize = new System.Drawing.Size(20, 20);
-            this.btnClearManual.Location = new System.Drawing.Point(809, 85);
+            this.btnClearManual.Location = new System.Drawing.Point(809, 84);
             this.btnClearManual.Name = "btnClearManual";
             this.btnClearManual.PressedState.ImageSize = new System.Drawing.Size(64, 64);
             this.btnClearManual.Size = new System.Drawing.Size(36, 31);
@@ -308,7 +308,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.btnEditManual.ImageOffset = new System.Drawing.Point(0, 0);
             this.btnEditManual.ImageRotate = 0F;
             this.btnEditManual.ImageSize = new System.Drawing.Size(20, 20);
-            this.btnEditManual.Location = new System.Drawing.Point(809, 85);
+            this.btnEditManual.Location = new System.Drawing.Point(809, 84);
             this.btnEditManual.Name = "btnEditManual";
             this.btnEditManual.PressedState.ImageSize = new System.Drawing.Size(64, 64);
             this.btnEditManual.Size = new System.Drawing.Size(36, 31);

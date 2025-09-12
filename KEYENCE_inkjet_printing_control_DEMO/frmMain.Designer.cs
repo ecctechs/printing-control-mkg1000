@@ -113,7 +113,7 @@
             this.btnOpenFolderStatus.Name = "btnOpenFolderStatus";
             this.btnOpenFolderStatus.Size = new System.Drawing.Size(153, 39);
             this.btnOpenFolderStatus.TabIndex = 31;
-            this.btnOpenFolderStatus.Text = "Open Folder Status";
+            this.btnOpenFolderStatus.Text = "Open Output Status Directory";
             this.btnOpenFolderStatus.Click += new System.EventHandler(this.btnOpenFolderStatus_Click);
             // 
             // btnBrowseStatus
@@ -132,7 +132,7 @@
             this.btnBrowseStatus.Name = "btnBrowseStatus";
             this.btnBrowseStatus.Size = new System.Drawing.Size(161, 40);
             this.btnBrowseStatus.TabIndex = 30;
-            this.btnBrowseStatus.Text = "Inkjet Output Status";
+            this.btnBrowseStatus.Text = "Browse Output Status Path";
             this.btnBrowseStatus.Click += new System.EventHandler(this.btnBrowseStatus_Click);
             // 
             // guna2Separator1
