@@ -40,6 +40,7 @@
             this.lblFrmMain = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblCloseForm = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
+            this.timerRealTime = new System.Windows.Forms.Timer(this.components);
             this.pannelMain.SuspendLayout();
             this.panelTool.SuspendLayout();
             this.panelHeader.SuspendLayout();
@@ -187,6 +188,11 @@
             this.guna2DragControl1.TargetControl = this.panelHeader;
             this.guna2DragControl1.UseTransparentDrag = true;
             // 
+            // timerRealTime
+            // 
+            this.timerRealTime.Enabled = true;
+            this.timerRealTime.Tick += new System.EventHandler(this.timerRealTime_Tick);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
@@ -220,5 +226,6 @@
         private Guna.UI2.WinForms.Guna2Button btnOpenFolderStatus;
         private Guna.UI2.WinForms.Guna2Button btnBrowseStatus;
         public Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private System.Windows.Forms.Timer timerRealTime;
     }
 }

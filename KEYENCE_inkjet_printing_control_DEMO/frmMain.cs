@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,14 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             var configs = ConfigManager.Load();
 
             LiveStatusManager.Initialize(configs);
+        }
+
+        public void GetTimerRealTime()
+        {
+            DateTime now = DateTime.Now;
+            string realtime = now.ToString("ddd, dd MMM yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+
+            guna2HtmlLabel1.Text = realtime;    
         }
 
         public void GetucOverView()
@@ -71,6 +80,11 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             {
                 MessageBox.Show("ยังไม่ได้เลือกโฟลเดอร์ หรือโฟลเดอร์ไม่พบ", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void timerRealTime_Tick(object sender, EventArgs e)
+        {
+            GetTimerRealTime();
         }
     }
 }
