@@ -99,7 +99,7 @@ namespace StatusMapping
                     return _statusData.StatusCodes[code];
             }
 
-            return "[UNKNOWN] Code not found";
+            return "---";
         }
     }
 }

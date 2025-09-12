@@ -67,6 +67,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
             var configs = Load();
             configs.Add(newConfig);
             Save(configs);
+            LiveStatusManager.Initialize(configs);
         }
 
         // แก้ไข Config (ค้นหาโดย InkjetName)
@@ -78,6 +79,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
             {
                 configs[index] = updatedConfig;
                 Save(configs);
+                LiveStatusManager.Initialize(configs);
             }
         }
 
@@ -86,6 +88,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
             var configs = Load();
             configs.RemoveAll(c => c.InkjetName == inkjetName);
             Save(configs);
+            LiveStatusManager.Initialize(configs);
         }
     }
 }

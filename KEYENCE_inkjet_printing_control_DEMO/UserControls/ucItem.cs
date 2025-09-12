@@ -280,6 +280,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 Status = mainCategory,
                 CurrentMessage = _currentConfig.LatestPrintDetail
             };
+
             // ทำ ErrorDetail / ErrorCode เฉพาะกรณี EV
             if (type == "EV")
             {
@@ -294,8 +295,12 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 
                 var codes = statusCodes.Select(code => code.Trim()).ToList();
 
-                currentStatus.ErrorDetail = $"\"[{string.Join(",", details)}]\"";
-                currentStatus.ErrorCode = $"\"[{string.Join(",", codes)}]\"";
+                currentStatus.ErrorDetail = details.Count > 1
+                ? $"\"[{string.Join(",", details)}]\""
+                : "---";
+                currentStatus.ErrorCode = codes.Count > 1
+                ? $"\"[{string.Join(",", codes)}]\""
+    :           "---";
             }
             else
             {

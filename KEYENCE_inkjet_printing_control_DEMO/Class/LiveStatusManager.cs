@@ -96,7 +96,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
                     $"{status.Status}," +
                     $"{status.ErrorDetail ?? "---"}," +
                     $"{status.ErrorCode ?? "---"}," +
-                    $"\"{status.CurrentMessage?.Replace("\"", "\"\"") ?? ""}\""
+                    $"\"{(string.IsNullOrEmpty(status.CurrentMessage) ? "---" : status.CurrentMessage.Replace("\"", "\"\""))}\""
                 );
             }
 
