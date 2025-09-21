@@ -40,6 +40,15 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             InitializeLeftEdgePanel();
             SetPanel3RoundedCorners(panelDetails, 50);
 
+            // ปิด Hover Effect
+            circleStatus.HoverState.FillColor = circleStatus.FillColor;
+            circleStatus.HoverState.ForeColor = circleStatus.ForeColor;
+            circleStatus.HoverState.BorderColor = circleStatus.BorderColor;
+
+            // ถ้าไม่อยากให้กดแล้วเปลี่ยนสีก็ปิดด้วย
+            circleStatus.PressedColor = circleStatus.FillColor;
+            circleStatus.CheckedState.FillColor = circleStatus.FillColor;
+
             // ✅ ตั้งค่าและเริ่มการทำงานของ Timer
             _fileMonitorTimer = new Timer();
             _fileMonitorTimer.Interval = 2000; // ตรวจสอบทุกๆ 2 วินาที
@@ -204,8 +213,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 string trimmed = code.Trim();
                 string msg = _mapping.GetStatus(trimmed, type);
 
-                //Console.WriteLine(trimmed + "  " + msg);
-
                 // เก็บรายละเอียดทั้งหมดสำหรับ tooltip
                 tooltipList.Add($"{trimmed}: {msg}");
 
@@ -352,7 +359,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             }
         }
 
-
         private void InitializeLeftEdgePanel() // ตั้งค่าเริ่มต้น ขอบซ้าย pannelDetail โค้ง
         {
             _leftEdgePanel = new Panel();
@@ -361,6 +367,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             _leftEdgePanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
             panelDetails.Controls.Add(_leftEdgePanel);
         }
+
         private void SetPanel3RoundedCorners(Panel panel, int radius)  // ฟังก์ชันสำหรับทำให้ Panel มีมุมโค้งมนตาม radius ที่กำหนด
         {
             GraphicsPath path = new GraphicsPath();

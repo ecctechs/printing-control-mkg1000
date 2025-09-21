@@ -152,7 +152,7 @@ public static class KeyenceConnectionManager
                     else
                     {
                         type = "SB";
-                        string statusResponse = await connector.SendCommandAsync("SB");
+                        string statusResponse = await connector.SendCommandAsync(type);
                         string statusCode = statusResponse.Split(',').LastOrDefault()?.Trim() ?? "Unknown";
                         finalStatusCodes = new List<string> { statusCode };
                     }

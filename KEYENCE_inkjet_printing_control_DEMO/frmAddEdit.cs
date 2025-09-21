@@ -195,7 +195,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO
         // ตรวจสอบว่าเป็นค่า 0-255 และไม่เกิน 3 หลัก
         private void ValidateIpOctet(object sender, EventArgs e)
         {
+            int maxIpOctet = 255;
             var textBox = sender as Guna.UI2.WinForms.Guna2TextBox;
+
             if (textBox == null) return;
 
             // จำกัดจำนวนตัวอักษรสูงสุด 3 หลัก
@@ -204,9 +206,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO
             // ตรวจสอบค่าตัวเลข
             if (int.TryParse(textBox.Text, out int value))
             {
-                if (value > 255)
+                if (value > maxIpOctet)
                 {
-                    textBox.Text = "255";
+                    textBox.Text = maxIpOctet.ToString();
                     textBox.SelectionStart = textBox.Text.Length; // ย้าย cursor ไปท้าย
                 }
             }
@@ -224,12 +226,13 @@ namespace KEYENCE_inkjet_printing_control_DEMO
 
         private void txtPort_TextChanged(object sender, EventArgs e)
         {
+            int maxPort = 65535;
             // ตรวจสอบค่าตัวเลข
             if (int.TryParse(txtPort.Text, out int value))
             {
-                if (value > 65535)
+                if (value > maxPort)
                 {
-                    txtPort.Text = "65535";
+                    txtPort.Text = maxPort.ToString();
                     txtPort.SelectionStart = txtPort.Text.Length; // ย้าย cursor ไปท้าย
                 }
             }

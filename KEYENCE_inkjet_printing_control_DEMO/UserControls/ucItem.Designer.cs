@@ -129,6 +129,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.circleStatus.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
             this.circleStatus.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.circleStatus.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.circleStatus.FillColor = System.Drawing.Color.Gray;
             this.circleStatus.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.circleStatus.ForeColor = System.Drawing.Color.White;
             this.circleStatus.Location = new System.Drawing.Point(102, 78);

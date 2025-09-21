@@ -14,8 +14,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
     public partial class ucOverview : UserControl
     {
         private Timer _statusTimer;
-        //private Random _random = new Random();
-        //private List<string> _possibleStatuses = new List<string> { "Printable", "Warning", "Error", "Stop", "Suspended", "Disconnected" };
 
         public ucOverview()
         {
