@@ -32,6 +32,7 @@
             this.pannelMain = new Guna.UI2.WinForms.Guna2Panel();
             this.panelContainer = new Guna.UI2.WinForms.Guna2Panel();
             this.panelTool = new Guna.UI2.WinForms.Guna2Panel();
+            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.btnOpenFolderStatus = new Guna.UI2.WinForms.Guna2Button();
             this.btnBrowseStatus = new Guna.UI2.WinForms.Guna2Button();
             this.guna2Separator1 = new Guna.UI2.WinForms.Guna2Separator();
@@ -39,7 +40,7 @@
             this.lblFrmMain = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblCloseForm = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
-            this.guna2HtmlLabel1 = new Guna.UI2.WinForms.Guna2HtmlLabel();
+            this.timerRealTime = new System.Windows.Forms.Timer(this.components);
             this.pannelMain.SuspendLayout();
             this.panelTool.SuspendLayout();
             this.panelHeader.SuspendLayout();
@@ -77,12 +78,25 @@
             this.panelTool.Controls.Add(this.btnOpenFolderStatus);
             this.panelTool.Controls.Add(this.btnBrowseStatus);
             this.panelTool.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelTool.Font = new System.Drawing.Font("Century Gothic", 10.2F);
+            this.panelTool.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
             this.panelTool.Location = new System.Drawing.Point(2, 28);
             this.panelTool.Margin = new System.Windows.Forms.Padding(4);
             this.panelTool.Name = "panelTool";
             this.panelTool.Size = new System.Drawing.Size(1276, 46);
             this.panelTool.TabIndex = 3;
+            // 
+            // guna2HtmlLabel1
+            // 
+            this.guna2HtmlLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.guna2HtmlLabel1.AutoSize = false;
+            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.guna2HtmlLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.guna2HtmlLabel1.Location = new System.Drawing.Point(1064, 12);
+            this.guna2HtmlLabel1.Margin = new System.Windows.Forms.Padding(4);
+            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
+            this.guna2HtmlLabel1.Size = new System.Drawing.Size(201, 23);
+            this.guna2HtmlLabel1.TabIndex = 32;
+            this.guna2HtmlLabel1.Text = "Fri, 25 Jul 2025 15:59:59";
             // 
             // btnOpenFolderStatus
             // 
@@ -93,13 +107,13 @@
             this.btnOpenFolderStatus.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btnOpenFolderStatus.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnOpenFolderStatus.FillColor = System.Drawing.Color.Gray;
-            this.btnOpenFolderStatus.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnOpenFolderStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOpenFolderStatus.ForeColor = System.Drawing.Color.White;
             this.btnOpenFolderStatus.Location = new System.Drawing.Point(177, 2);
             this.btnOpenFolderStatus.Name = "btnOpenFolderStatus";
             this.btnOpenFolderStatus.Size = new System.Drawing.Size(153, 39);
             this.btnOpenFolderStatus.TabIndex = 31;
-            this.btnOpenFolderStatus.Text = "Open Folder Status";
+            this.btnOpenFolderStatus.Text = "Open Output Status Directory";
             this.btnOpenFolderStatus.Click += new System.EventHandler(this.btnOpenFolderStatus_Click);
             // 
             // btnBrowseStatus
@@ -112,13 +126,13 @@
             this.btnBrowseStatus.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
             this.btnBrowseStatus.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.btnBrowseStatus.FillColor = System.Drawing.Color.Gray;
-            this.btnBrowseStatus.Font = new System.Drawing.Font("Century Gothic", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBrowseStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBrowseStatus.ForeColor = System.Drawing.Color.White;
             this.btnBrowseStatus.Location = new System.Drawing.Point(10, 1);
             this.btnBrowseStatus.Name = "btnBrowseStatus";
             this.btnBrowseStatus.Size = new System.Drawing.Size(161, 40);
             this.btnBrowseStatus.TabIndex = 30;
-            this.btnBrowseStatus.Text = "Inkjet Output Status";
+            this.btnBrowseStatus.Text = "Browse Output Status Path";
             this.btnBrowseStatus.Click += new System.EventHandler(this.btnBrowseStatus_Click);
             // 
             // guna2Separator1
@@ -147,7 +161,7 @@
             // 
             this.lblFrmMain.AutoSize = false;
             this.lblFrmMain.BackColor = System.Drawing.Color.Transparent;
-            this.lblFrmMain.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblFrmMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFrmMain.Location = new System.Drawing.Point(11, 0);
             this.lblFrmMain.Margin = new System.Windows.Forms.Padding(4);
             this.lblFrmMain.Name = "lblFrmMain";
@@ -159,11 +173,11 @@
             // 
             this.lblCloseForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCloseForm.BackColor = System.Drawing.Color.Transparent;
-            this.lblCloseForm.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCloseForm.Location = new System.Drawing.Point(1250, -3);
+            this.lblCloseForm.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCloseForm.Location = new System.Drawing.Point(1250, -2);
             this.lblCloseForm.Margin = new System.Windows.Forms.Padding(4);
             this.lblCloseForm.Name = "lblCloseForm";
-            this.lblCloseForm.Size = new System.Drawing.Size(15, 25);
+            this.lblCloseForm.Size = new System.Drawing.Size(17, 27);
             this.lblCloseForm.TabIndex = 0;
             this.lblCloseForm.Text = "X";
             this.lblCloseForm.Click += new System.EventHandler(this.lblCloseForm_Click);
@@ -174,26 +188,18 @@
             this.guna2DragControl1.TargetControl = this.panelHeader;
             this.guna2DragControl1.UseTransparentDrag = true;
             // 
-            // guna2HtmlLabel1
+            // timerRealTime
             // 
-            this.guna2HtmlLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.guna2HtmlLabel1.AutoSize = false;
-            this.guna2HtmlLabel1.BackColor = System.Drawing.Color.Transparent;
-            this.guna2HtmlLabel1.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2HtmlLabel1.Location = new System.Drawing.Point(1064, 12);
-            this.guna2HtmlLabel1.Margin = new System.Windows.Forms.Padding(4);
-            this.guna2HtmlLabel1.Name = "guna2HtmlLabel1";
-            this.guna2HtmlLabel1.Size = new System.Drawing.Size(201, 23);
-            this.guna2HtmlLabel1.TabIndex = 32;
-            this.guna2HtmlLabel1.Text = "Fri, 25 Jul 2025 15:59:59";
+            this.timerRealTime.Enabled = true;
+            this.timerRealTime.Tick += new System.EventHandler(this.timerRealTime_Tick);
             // 
             // frmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 21F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1280, 680);
             this.Controls.Add(this.pannelMain);
-            this.Font = new System.Drawing.Font("Century Gothic", 10.2F);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "frmMain";
@@ -220,5 +226,6 @@
         private Guna.UI2.WinForms.Guna2Button btnOpenFolderStatus;
         private Guna.UI2.WinForms.Guna2Button btnBrowseStatus;
         public Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
+        private System.Windows.Forms.Timer timerRealTime;
     }
 }

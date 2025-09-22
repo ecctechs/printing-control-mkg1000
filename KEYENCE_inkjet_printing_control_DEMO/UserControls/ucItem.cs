@@ -7,7 +7,16 @@ using System.Windows.Forms;
 using KEYENCE_inkjet_printing_control_DEMO.Class;
 using System.IO;     
 using System.Linq;       
-using System.Threading.Tasks; 
+using System.Threading.Tasks;
+using System.Runtime.InteropServices;
+using Guna.UI2.WinForms;
+using System.Collections.Generic;
+using StatusMapping;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
+using System.Windows.Interop;
+using System.Diagnostics.Eventing.Reader;
+using Guna.UI2.WinForms.Suite;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
 
 namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
@@ -23,24 +32,57 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         private Timer _fileMonitorTimer;
         private bool _isProcessingFile = false;
 
+        private LoadMapping _mapping;
+
         public ucItem()
         {
             InitializeComponent();
             InitializeLeftEdgePanel();
             SetPanel3RoundedCorners(panelDetails, 50);
 
-            // ✅ 5. ตั้งค่าและเริ่มการทำงานของ Timer
+            // ปิด Hover Effect
+            circleStatus.HoverState.FillColor = circleStatus.FillColor;
+            circleStatus.HoverState.ForeColor = circleStatus.ForeColor;
+            circleStatus.HoverState.BorderColor = circleStatus.BorderColor;
+
+            // ถ้าไม่อยากให้กดแล้วเปลี่ยนสีก็ปิดด้วย
+            circleStatus.PressedColor = circleStatus.FillColor;
+            circleStatus.CheckedState.FillColor = circleStatus.FillColor;
+
+            // ✅ ตั้งค่าและเริ่มการทำงานของ Timer
             _fileMonitorTimer = new Timer();
             _fileMonitorTimer.Interval = 2000; // ตรวจสอบทุกๆ 2 วินาที
-            _fileMonitorTimer.Tick += FileMonitorTimer_Tick;
+            _fileMonitorTimer.Tick += ProcessFileTimerTick;
             _fileMonitorTimer.Start();
+
+            // ✅ สมัครรับ Event จาก Manager
+            KeyenceConnectionManager.OnStatusReceived += ConnectionManager_OnStatusReceived;
+
+            // Load Status Mapping 
+            _mapping = new LoadMapping();
+            _mapping.LoadStatus();
+            _mapping.LoadCommunicationError();
+        }
+
+        /// <summary>
+        /// เมธอดนี้จะถูกเรียกทุกครั้งที่ Manager ได้รับสถานะใหม่จากเครื่องพิมพ์ใดๆ
+        /// </summary>
+        private void ConnectionManager_OnStatusReceived(string inkjetName, List<string> statusCodes , string type)
+        {
+            if (_currentConfig?.InkjetName == inkjetName)
+            {
+                this.Invoke((MethodInvoker)delegate
+                {
+                    UpdateStatus(statusCodes , type);
+                });
+            }
         }
 
         // สร้างเมธอดสำหรับจัดการ Timer Tick (ทำงานแบบ async)
-        private async void FileMonitorTimer_Tick(object sender, EventArgs e)
+        private async void ProcessFileTimerTick(object sender, EventArgs e)
         {
             if (_isProcessingFile) return;
-            if (_currentConfig == null || string.IsNullOrEmpty(_currentConfig.InputDirectory) || !Directory.Exists(_currentConfig.InputDirectory))
+            if (_currentConfig == null || string.IsNullOrEmpty(_currentConfig.InputDirectory) || !Directory.Exists(_currentConfig.InputDirectory)) // กรณีนี้ที่โฟลเดอร์ถูกเซ็ตไว้ แล้วโดนลบจะเข้าเงือนไขนี้
             {
                 // อาจแสดงข้อความสถานะได้
                 txtCurrentData.Text = "Invalid Input Directory";
@@ -50,9 +92,9 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             try
             {
                 var txtFile = Directory.GetFiles(_currentConfig.InputDirectory, "*.txt").FirstOrDefault();
-
                 if (txtFile != null) // --- ถ้าเจอไฟล์ ---
                 {
+                
                     _isProcessingFile = true;
 
                     var processTime = DateTime.Now;
@@ -66,89 +108,69 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     // รอ 10 วิ (จำลองหน่วงเวลา)
                     await Task.Delay(10000);
 
-                    // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-                    if (fileName.Contains("ER"))
+                    var isSendSuccess = await KeyenceConnectionManager.SendMessageAsync(_currentConfig.InkjetName, fileContent);
+
+                    if (isSendSuccess.Success)
                     {
+                        txtLaterPrintDetail.BorderColor = Color.Black;
+                        lblError.Visible = false;
+    
                         await Task.Run(() =>
                         {
-                            //StatusLogger.LogEvent(
-                            //    _currentConfig.InkjetName,
-                            //    "ERROR",
-                            //    "Send_Data_Fail",
-                            //    fileContent
-                            //);
+                            string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
+                            string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
 
                             // --- Create a new status object to send to the manager ---
                             var currentStatus = new CurrentInkjetStatus
                             {
                                 Timestamp = DateTime.Now,
                                 InkjetName = _currentConfig.InkjetName,
-                                ErrorDetail = "Send_Data_Fail",
-                                ErrorCode = "E100"
+                                CurrentMessage = fileContent, // Use existing data                       
                             };
 
                             // ✅ Call the new manager to update this printer's status and rewrite the file.
                             LiveStatusManager.UpdateAndSaveStatus(currentStatus);
+
+                            File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+
+                            // ลบไฟล์ต้นทาง
+                            File.Delete(txtFile);
                         });
 
-                        // แจ้ง UI ว่าเกิด Error (ต้องใช้ Invoke เพราะเราอยู่ใน async event)
-                        this.Invoke((MethodInvoker)(() =>
-                        {
-                            lblError.Visible = true;
-                            txtLaterPrintDetail.BorderColor = Color.Red;
-                            lblError.Text = $"❌ ERROR [ {fileContent} ]";
-                        }));
+                        // อัพเดท UI หลังประมวลผลเสร็จ
+                        txtQueueDataValue.Text = $"{processTime:G} - {fileName}";
+                        txtWaitingPrintDetail.Text = fileContent;
 
-                        // ตั้งสถานะให้พร้อมรับไฟล์ใหม่ (ไม่ลบไฟล์ และไม่อัพเดตอื่น ๆ)
+                        // บันทึกการเปลี่ยนแปลงลงไฟล์ JSON
+                        _currentConfig.CurrentData = $"{processTime:G} - {fileName}";
+                        _currentConfig.LatestPrintDetail = fileContent;
+                        ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+
+                        txtCurrentData.Text = "Waiting Data From Server";
+                        txtLaterPrintDetail.Text = "";
                         _isProcessingFile = false;
-
-                        // ออกจากเมธอดไม่ทำงานต่อ
-                        return;
                     }
-                    txtLaterPrintDetail.BorderColor = Color.Black;
-                    lblError.Visible = false;
-
-                    // ถ้าไม่ใช่ไฟล์ Error ทำงานตามปกติ
-                    await Task.Run(() =>
+                    else
                     {
-                        string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
-                        string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
+                        string lastPart = isSendSuccess.ErrorCode?.Split(',').Last(); // "22"
+                        // สมมติว่า errorCode มาจากเครื่อง (ในที่นี้อาจเป็น "01" หรือ "90" เป็นต้น)
+                        string errorCode = lastPart; // TODO: ดึงจากผลลัพธ์จริง
+                        var error = _mapping.GetCommunicationErrorByCode(errorCode);
 
-                        //StatusLogger.LogEvent(
-                        //    _currentConfig.InkjetName,
-                        //    "INFO",
-                        //    "Job_Processed_Auto",
-                        //    fileContent
-                        //);
-                        // --- Create a new status object to send to the manager ---
-                        var currentStatus = new CurrentInkjetStatus
+                        lblError.Visible = true;
+                        txtLaterPrintDetail.BorderColor = Color.Red;
+
+                        if (error != null)
                         {
-                            Timestamp = DateTime.Now,
-                            InkjetName = _currentConfig.InkjetName,
-                            CurrentMessage = fileContent, // Use existing data                       
-                        };
+                            lblError.Text = $"❌ ERROR [{lastPart}] {error.Description}";
+                        }
+                        else
+                        {
+                            lblError.Text = $"❌ ERROR [{lastPart}] ไม่พบรายละเอียดใน mapping";
+                        }
 
-                        // ✅ Call the new manager to update this printer's status and rewrite the file.
-                        LiveStatusManager.UpdateAndSaveStatus(currentStatus);
-
-                        File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
-
-                        // ลบไฟล์ต้นทาง
-                        File.Delete(txtFile);
-                    });
-
-                    // อัพเดท UI หลังประมวลผลเสร็จ
-                    txtQueueDataValue.Text = $"{processTime:G} - {fileName}";
-                    txtWaitingPrintDetail.Text = fileContent;
-
-                    // บันทึกการเปลี่ยนแปลงลงไฟล์ JSON
-                    _currentConfig.CurrentData = $"{processTime:G} - {fileName}";
-                    _currentConfig.LatestPrintDetail = fileContent;
-                    ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
-
-                    txtCurrentData.Text = "Waiting Data From Server";
-                    txtLaterPrintDetail.Text = "";
-                    _isProcessingFile = false;
+                        _isProcessingFile = false;
+                    }             
                 }
                 else
                 {
@@ -178,57 +200,123 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             txtWaitingPrintDetail.Text = config.LatestPrintDetail;
         }
 
-        public void UpdateStatus(string newStatus)
+        public void UpdateStatus(List<string> statusCodes , string type)
         {
-            if (_currentConfig != null)
+            if (_currentConfig == null) return;
+
+            string mainCategory = "Unknown";
+            string mainDetail = "Unknown";
+            List<string> tooltipList = new List<string>();
+
+            foreach (var code in statusCodes)
             {
-                // ADD THIS CHECK: If the new status is the same as the current one, do nothing.
-                if (_currentConfig.Status == newStatus)
+                string trimmed = code.Trim();
+                string msg = _mapping.GetStatus(trimmed, type);
+
+                // เก็บรายละเอียดทั้งหมดสำหรับ tooltip
+                tooltipList.Add($"{trimmed}: {msg}");
+
+                // --- Mapping ด้วยช่วงของรหัส ---
+                int codeNum;
+                if (int.TryParse(trimmed, out codeNum))
                 {
-                    return; // Exit the method early
+                    if (codeNum >= 1 && codeNum <= 99 && type == "EV") // Error
+                    {
+                        if (mainCategory != "Error")
+                        {
+                            mainCategory = "Error";
+                            mainDetail = msg.Trim();
+                        }
+                    }
+                    else if (codeNum >= 101 && codeNum <= 192 && type == "EV") // Warning
+                    {
+                        if (mainCategory != "Error" && mainCategory != "Warning")
+                        {
+                            mainCategory = "Warning";
+                            mainDetail = msg.Trim();
+                        }
+                    }
+                    else
+                    {
+                        if(codeNum == 04)
+                        {
+                            mainCategory = "Suspended";
+                        }
+                        else if(codeNum == 05)
+                        {
+                            mainCategory = "Starting";
+                        }
+                        else if(codeNum == 06)
+                        {
+                            mainCategory = "Shutting Down";
+                        }
+                        else if (codeNum == 01)
+                        {
+                            mainCategory = "Printable";
+                        }
+                        else
+                        {
+                            mainCategory = "Stopped";
+                        }
+                    }
                 }
-
-                // --- Part 1: Update the object and UI (Existing code) ---
-                _currentConfig.Status = newStatus;
-                lblStatusValue.Text = newStatus;
-                SetStatusColor(newStatus);
-
-                // --- Part 2: Add code to log this status change ---
-                string logLevel;
-
-                // Map the status to a LogLevel for the log file
-                switch (newStatus)
+                else
                 {
-                    case "Warning":
-                        logLevel = "WARN";
-                        break;
-                    case "Error":
-                        logLevel = "ERROR";
-                        break;
-                    default: // "Printable", "Stop", "Suspended", etc.
-                        logLevel = "INFO";
-                        break;
+                    mainCategory = "Disconnect";
                 }
-
-                string message = $"Status changed to '{newStatus}'";
-
-                string loadedStatusCsvPath = AppSettings.LoadAppSettings();
-
-                // --- Create a new status object to send to the manager ---
-                var currentStatus = new CurrentInkjetStatus
-                {
-                    Timestamp = DateTime.Now,
-                    InkjetName = _currentConfig.InkjetName,
-                    Status = newStatus,
-                    CurrentMessage = _currentConfig.LatestPrintDetail, // Use existing data
-                                                                 // Populate error details if the status is "Error"
-                    ErrorDetail = newStatus == "Error" ? "An error was detected" : "",
-                    ErrorCode = newStatus == "Error" ? "E500" : ""
-                };
-
-                // ✅ Call the new manager to update this printer's status and rewrite the file.
-                LiveStatusManager.UpdateAndSaveStatus(currentStatus);
             }
+
+            // --- Update UI ---
+            lblStatusValue.Text = mainCategory;
+            lblStatusDetailValue.Text = mainDetail;
+            SetStatusColor(mainCategory);
+
+            // --- ตั้ง Visible ตาม Category ---
+            lblStatusDetailValue.Visible = (mainCategory == "Error" || mainCategory == "Warning");
+
+            // --- Tooltip แสดงรายละเอียดทั้งหมด ---
+            string detail = string.Join(Environment.NewLine, tooltipList);
+            ToolTip tt = new ToolTip();
+            tt.SetToolTip(lblStatusValue, detail);
+            tt.SetToolTip(lblStatusDetailValue, detail);
+
+            // --- สร้าง status object ---
+            var currentStatus = new CurrentInkjetStatus
+            {
+                Timestamp = DateTime.Now,
+                InkjetName = _currentConfig.InkjetName,
+                Status = mainCategory,
+                CurrentMessage = _currentConfig.LatestPrintDetail
+            };
+
+            // ทำ ErrorDetail / ErrorCode เฉพาะกรณี EV
+            if (type == "EV")
+            {
+                var details = statusCodes
+                    .Select(code => _mapping.GetStatus(code.Trim(), type))
+                    .Select(msg => msg
+                        .Replace("[ERROR]", "")
+                        .Replace("[WARNING]", "")
+                        .Replace("[STATUS]", "")
+                        .Trim())
+                    .ToList();
+
+                var codes = statusCodes.Select(code => code.Trim()).ToList();
+
+                currentStatus.ErrorDetail = string.Join(",", details) != "---"
+                ? $"\"[{string.Join(",", details)}]\""
+                : "---";
+                currentStatus.ErrorCode = string.Join(",", details) != "---"
+                ? $"\"[{string.Join(",", details)}]\""
+                : "---";
+            }
+            else
+            {
+                currentStatus.ErrorDetail = "---";
+                currentStatus.ErrorCode = "---";
+            }
+
+            LiveStatusManager.UpdateAndSaveStatus(currentStatus);
         }
 
         private void SetStatusColor(string status)
@@ -271,8 +359,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             }
         }
 
-
-        private void InitializeLeftEdgePanel()
+        private void InitializeLeftEdgePanel() // ตั้งค่าเริ่มต้น ขอบซ้าย pannelDetail โค้ง
         {
             _leftEdgePanel = new Panel();
             _leftEdgePanel.Size = new Size(5, panelDetails.Height); // กว้าง 10 px
@@ -280,7 +367,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             _leftEdgePanel.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
             panelDetails.Controls.Add(_leftEdgePanel);
         }
-        private void SetPanel3RoundedCorners(Panel panel, int radius)
+
+        private void SetPanel3RoundedCorners(Panel panel, int radius)  // ฟังก์ชันสำหรับทำให้ Panel มีมุมโค้งมนตาม radius ที่กำหนด
         {
             GraphicsPath path = new GraphicsPath();
             int w = panel.Width;
@@ -343,9 +431,10 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             btnEditManual.Visible = true;
             btnClearManual.Visible = false;
             btnSaveManual.Visible = false;
+            imgSetting.Focus();
         }
 
-        private void btnSaveManual_Click(object sender, EventArgs e)
+        private async void btnSaveManual_Click(object sender, EventArgs e)
         {
             if(txtWaitingPrintDetail.Text == "")
             {
@@ -363,52 +452,47 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             {
                 try
                 {
-                    // 3. Prepare data for logging
+                    // Prepare data for logging
                     var processTime = DateTime.Now;
                     string contentToLog = txtWaitingPrintDetail.Text;
                     string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
 
-                    // 4. Create the log entry with the "Manual" type
+                    // Create the log entry with the "Manual" type
                     string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Manual,{contentToLog.Replace(Environment.NewLine, " ")}";
 
-                    // ถ้าเป็นไฟล์ Error ให้ทำเฉพาะ log และแสดง error message เท่านั้น
-                    if (contentToLog.Contains("ER"))
-                    {        
-                            StatusLogger.LogEvent(
-                                _currentConfig.InkjetName,
-                                "ERROR",
-                                "Send_Data_Fail",
-                                contentToLog
-                            );
-                            lblErrorManual.Visible = true;
-                            txtWaitingPrintDetail.BorderColor = Color.Red;
-                            lblErrorManual.Text = $"❌ ERROR [ {contentToLog} ]";
+                    // ส่งข้อความไป Keyence
+                    var isSendSuccess = await KeyenceConnectionManager.SendMessageAsync(_currentConfig.InkjetName, contentToLog);
 
-                        // ออกจากเมธอดไม่ทำงานต่อ
-                        return;
+                    if (isSendSuccess.Success)
+                    {
+                        lblErrorManual.Visible = false;
+                        txtWaitingPrintDetail.BorderColor = Color.Black;
+
+                        File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+                        MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
+                        ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
+
+                        txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
+                        txtWaitingPrintDetail.ReadOnly = true;
+                        btnEditManual.Visible = true;
+                        btnClearManual.Visible = false;
+                        btnSaveManual.Visible = false;
+                        imgSetting.Focus();
                     }
-                    lblErrorManual.Visible = false;
-                    txtWaitingPrintDetail.BorderColor = Color.Black;
+                    else
+                    {
+                        // ❌ ส่งไม่สำเร็จ ดึง ErrorCode ตัวสุดท้าย
+                        string lastPart = isSendSuccess.ErrorCode?.Split(',').Last();
+                        var error = _mapping.GetCommunicationErrorByCode(lastPart);
 
-                    // 5. Write to the log file
-                    File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
-
-                    StatusLogger.LogEvent(
-                          _currentConfig.InkjetName,
-                          "INFO",                 // LogLevel for a successful job
-                          "Job_Processed_Manual",   // A clear EventType
-                          contentToLog             // The message is the content of the file
-                      );
-                    MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    _currentConfig.LatestPrintDetail = txtWaitingPrintDetail.Text;
-                    ConfigManager.Edit(_currentConfig.InkjetName, _currentConfig);
-                    txtWaitingPrintDetail.FillColor = Color.WhiteSmoke;
-                    txtWaitingPrintDetail.ReadOnly = true;
-                    btnEditManual.Visible = true;
-                    btnClearManual.Visible = false;
-                    btnSaveManual.Visible = false;
-
+                        lblErrorManual.Visible = true;
+                        txtWaitingPrintDetail.BorderColor = Color.Red;
+                        lblErrorManual.Text = error != null
+                            ? $"❌ ERROR [{lastPart}] {error.Description}"
+                            : $"❌ ERROR [{lastPart}] ไม่พบรายละเอียดใน mapping";
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -416,5 +500,23 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 }
             }
         }
+
+        private void txtCurrentData_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
+        }
+
+        private void txtQueueDataValue_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
+        }
+
+        private void txtLaterPrintDetail_Enter(object sender, EventArgs e)
+        {
+            imgSetting.Focus();
+        }
     }
 }
+
+
+

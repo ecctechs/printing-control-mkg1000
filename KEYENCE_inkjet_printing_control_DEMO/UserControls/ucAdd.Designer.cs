@@ -42,7 +42,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(5, 160);
+            this.panel1.Size = new System.Drawing.Size(5, 140);
             this.panel1.TabIndex = 0;
             // 
             // panel2
@@ -51,7 +51,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel2.Location = new System.Drawing.Point(1275, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(5, 160);
+            this.panel2.Size = new System.Drawing.Size(5, 140);
             this.panel2.TabIndex = 1;
             // 
             // guna2GradientPanel1
@@ -66,7 +66,7 @@
             this.guna2GradientPanel1.FillColor2 = System.Drawing.Color.White;
             this.guna2GradientPanel1.Location = new System.Drawing.Point(5, 0);
             this.guna2GradientPanel1.Name = "guna2GradientPanel1";
-            this.guna2GradientPanel1.Size = new System.Drawing.Size(1270, 160);
+            this.guna2GradientPanel1.Size = new System.Drawing.Size(1270, 140);
             this.guna2GradientPanel1.TabIndex = 2;
             // 
             // txtAddInkjet
@@ -75,7 +75,7 @@
             this.txtAddInkjet.BackColor = System.Drawing.Color.Transparent;
             this.txtAddInkjet.Font = new System.Drawing.Font("Century Gothic", 16.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtAddInkjet.ForeColor = System.Drawing.Color.Gray;
-            this.txtAddInkjet.Location = new System.Drawing.Point(579, 102);
+            this.txtAddInkjet.Location = new System.Drawing.Point(575, 93);
             this.txtAddInkjet.Name = "txtAddInkjet";
             this.txtAddInkjet.Size = new System.Drawing.Size(137, 35);
             this.txtAddInkjet.TabIndex = 4;
@@ -93,7 +93,7 @@
             this.btnAddInkjet.ForeColor = System.Drawing.Color.White;
             this.btnAddInkjet.Image = global::KEYENCE_inkjet_printing_control_DEMO.Properties.Resources.add_80dp_FFFFFF;
             this.btnAddInkjet.ImageSize = new System.Drawing.Size(80, 80);
-            this.btnAddInkjet.Location = new System.Drawing.Point(601, 28);
+            this.btnAddInkjet.Location = new System.Drawing.Point(601, 24);
             this.btnAddInkjet.Name = "btnAddInkjet";
             this.btnAddInkjet.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             this.btnAddInkjet.Size = new System.Drawing.Size(75, 68);
@@ -109,7 +109,7 @@
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ucAdd";
-            this.Size = new System.Drawing.Size(1280, 160);
+            this.Size = new System.Drawing.Size(1280, 140);
             this.guna2GradientPanel1.ResumeLayout(false);
             this.guna2GradientPanel1.PerformLayout();
             this.ResumeLayout(false);
