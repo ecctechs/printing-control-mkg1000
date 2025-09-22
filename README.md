@@ -68,8 +68,7 @@
 
 1. ระบบปฏิบัติการ Windows 10
 2. Microsoft Visual Studio 2022
- - Guna.UI2.WinForms
- - Newtonsoft.Json 
+ - Guna.UI2.WinForms 2.0.4.7
+ - Newtonsoft.Json 13.0.3
  - .NET Framework 4.7.2
-3. Windows From App (.NET Framework) C#
 
