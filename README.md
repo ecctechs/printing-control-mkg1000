@@ -26,7 +26,7 @@
 ## ⚙️ วิธีการติดตั้ง
 
 1. Clone โปรเจกต์นี้ลงเครื่องของคุณ:
-   ```bash
-   git clone https://github.com/username/repo-name.git
-   cd repo-name
+   ```bash 
+   git clone https://github.com/ecctechs/KEYENCE_inkjet_printing_control_DEMO.git
+   cd KEYENCE_inkjet_printing_control_DEMO
 
