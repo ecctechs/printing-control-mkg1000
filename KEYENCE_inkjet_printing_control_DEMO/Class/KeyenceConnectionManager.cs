@@ -41,11 +41,68 @@ public static class KeyenceConnectionManager
     /// <param name="inkjetName">ชื่อของเครื่องพิมพ์ Inkjet เป้าหมาย</param>
     /// <param name="message">ข้อความที่ต้องการส่งไปพิมพ์</param>
     /// <returns>คืนค่า true หากส่งสำเร็จ, มิฉะนั้นคืนค่า false</returns>
+    //public static async Task<SendResult> SendMessageAsync(string inkjetName, string message)
+    //{
+    //    var result = new SendResult();
+
+    //    // ตรวจสอบว่ามีเครื่องพิมพ์ชื่อนี้ใน Manager หรือไม่
+    //    if (!_printers.TryGetValue(inkjetName, out var connector))
+    //    {
+    //        result.Success = false;
+    //        result.ErrorCode = $"No printer found with name '{inkjetName}'";
+    //        Console.WriteLine(result.ErrorCode);
+    //        return result;
+    //    }
+
+    //    // โหลด Config ล่าสุดสำหรับเครื่องพิมพ์นี้
+    //    var config = ConfigManager.Load().FirstOrDefault(c => c.InkjetName == inkjetName);
+    //    if (config == null)
+    //    {
+    //        result.Success = false;
+    //        result.ErrorCode = $"No config found for printer '{inkjetName}'";
+    //        Console.WriteLine(result.ErrorCode);
+    //        return result;
+    //    }
+
+    //    try
+    //    {
+    //        // เชื่อมต่อถ้ายังไม่เชื่อม
+    //        if (!connector.IsConnected)
+    //        {
+    //            await connector.ConnectAsync(config.IpAddress, config.Port);
+    //        }
+
+    //        string command = $"BK,1,0,{message}";
+    //        string response = await connector.SendCommandAsync(command);
+
+    //        if (response.StartsWith("ER"))
+    //        {
+    //            result.Success = false;
+    //            result.ErrorCode = response;
+    //            Console.WriteLine($"Error Send Text {inkjetName}: {response}");
+    //        }
+    //        else
+    //        {
+    //            result.Success = true;
+    //            result.ErrorCode = null;
+    //            Console.WriteLine($"Send Text : '{message}' To {inkjetName} Success, Response: {response}");
+    //        }
+
+    //        return result;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        result.Success = false;
+    //        result.ErrorCode = ex.Message;
+    //        Console.WriteLine($"Exception sending message to {inkjetName}: {ex.Message}");
+    //        connector?.Disconnect();
+    //        return result;
+    //    }
+    //}
     public static async Task<SendResult> SendMessageAsync(string inkjetName, string message)
     {
         var result = new SendResult();
 
-        // ตรวจสอบว่ามีเครื่องพิมพ์ชื่อนี้ใน Manager หรือไม่
         if (!_printers.TryGetValue(inkjetName, out var connector))
         {
             result.Success = false;
@@ -54,7 +111,6 @@ public static class KeyenceConnectionManager
             return result;
         }
 
-        // โหลด Config ล่าสุดสำหรับเครื่องพิมพ์นี้
         var config = ConfigManager.Load().FirstOrDefault(c => c.InkjetName == inkjetName);
         if (config == null)
         {
@@ -66,27 +122,71 @@ public static class KeyenceConnectionManager
 
         try
         {
-            // เชื่อมต่อถ้ายังไม่เชื่อม
             if (!connector.IsConnected)
             {
                 await connector.ConnectAsync(config.IpAddress, config.Port);
             }
 
-            string command = $"BK,1,0,{message}";
-            string response = await connector.SendCommandAsync(command);
+            // 🔹 1. ดึงค่า current status
+            string frResponse = await connector.SendCommandAsync("FR");
+            // ตัวอย่าง: FR,007[CR]
+            string currentStatus = frResponse.Replace("FR,", "").Trim();
 
-            if (response.StartsWith("ER"))
+            Console.WriteLine($"Current Status = {currentStatus}");
+
+            // 🔹 2. สร้าง block ตามตัวอย่าง
+            string raw = message.Trim(); // เช่น "L4|-F937|118-M250925015|25-09-25|15.25|200|"
+                                         // แยกข้อความด้วย '|'
+            string[] parts = message.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // block 01 = ข้อความทั้งหมดต่อกัน
+            string block01 = string.Join("", parts);
+
+            // block 02 = รหัสงาน + เลขรถ (ตัวอย่าง: L4-F937)
+            string block02 = parts.Length > 0 && parts.Length > 1 ? parts[0] + parts[1] : "";
+
+            // block 03 = รหัสใบงาน (ตัวอย่าง: 118-M250925015)
+            string block03 = parts.Length > 2 ? parts[2] : "";
+
+            // block 04 = วันที่ เวลา จำนวน (ตัวอย่าง: 25-09-25 15.25 200)
+            string block04 = "";
+            if (parts.Length > 3)
             {
-                result.Success = false;
-                result.ErrorCode = response;
-                Console.WriteLine($"Error Send Text {inkjetName}: {response}");
+                // ต่อจาก parts[3] ถึงท้าย (ยกเว้นถ้า parts มีแค่ 4)
+                block04 = string.Join(" ", parts.Skip(3));
             }
-            else
+
+            // 🔹 3. เตรียม command
+            List<string> commands = new List<string>
             {
-                result.Success = true;
-                result.ErrorCode = null;
-                Console.WriteLine($"Send Text : '{message}' To {inkjetName} Success, Response: {response}");
+                $"BE,{currentStatus},1,{block01}",
+                $"FS,{currentStatus},02,0,{block02}",
+                $"FS,{currentStatus},03,0,{block03}",
+                $"FS,{currentStatus},04,0,{block04}"
+            };
+            Console.WriteLine("block01" + block01);
+            Console.WriteLine("block02" + block02);
+            Console.WriteLine("block03" + block03);
+            Console.WriteLine("block04" + block04);
+
+            // 🔹 4. ส่งแต่ละคำสั่ง
+            foreach (var cmd in commands)
+            {
+                string response = await connector.SendCommandAsync(cmd);
+                if (response.StartsWith("ER"))
+                {
+                    result.Success = false;
+                    result.ErrorCode = response;
+                    Console.WriteLine($"Error Send Command ({cmd}) => {response}");
+                    return result;
+                }
+
+                Console.WriteLine($"Send Command: {cmd} => Response: {response}");
             }
+
+            result.Success = true;
+            result.ErrorCode = null;
+            Console.WriteLine($"Send all blocks to {inkjetName} success.");
 
             return result;
         }
@@ -99,6 +199,7 @@ public static class KeyenceConnectionManager
             return result;
         }
     }
+
 
 
     public static async Task PollAllStatusesAsync()

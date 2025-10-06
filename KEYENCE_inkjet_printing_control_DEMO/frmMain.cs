@@ -64,6 +64,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO
                 if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
                 {
                     AppSettings.SaveAppSettings(folderDialog.SelectedPath);
+                    var configs = ConfigManager.Load();
+                    LiveStatusManager.Initialize(configs);
                 }
             }
         }
