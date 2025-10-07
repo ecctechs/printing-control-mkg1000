@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.pannelMain = new Guna.UI2.WinForms.Guna2Panel();
             this.panelContainer = new Guna.UI2.WinForms.Guna2Panel();
             this.panelTool = new Guna.UI2.WinForms.Guna2Panel();
@@ -41,6 +42,7 @@
             this.lblCloseForm = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
             this.timerRealTime = new System.Windows.Forms.Timer(this.components);
+            this.guna2ImageButton1 = new Guna.UI2.WinForms.Guna2ImageButton();
             this.pannelMain.SuspendLayout();
             this.panelTool.SuspendLayout();
             this.panelHeader.SuspendLayout();
@@ -148,6 +150,7 @@
             // panelHeader
             // 
             this.panelHeader.BackColor = System.Drawing.Color.White;
+            this.panelHeader.Controls.Add(this.guna2ImageButton1);
             this.panelHeader.Controls.Add(this.lblFrmMain);
             this.panelHeader.Controls.Add(this.lblCloseForm);
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
@@ -162,7 +165,7 @@
             this.lblFrmMain.AutoSize = false;
             this.lblFrmMain.BackColor = System.Drawing.Color.Transparent;
             this.lblFrmMain.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblFrmMain.Location = new System.Drawing.Point(11, 0);
+            this.lblFrmMain.Location = new System.Drawing.Point(31, 0);
             this.lblFrmMain.Margin = new System.Windows.Forms.Padding(4);
             this.lblFrmMain.Name = "lblFrmMain";
             this.lblFrmMain.Size = new System.Drawing.Size(306, 21);
@@ -192,6 +195,20 @@
             // 
             this.timerRealTime.Enabled = true;
             this.timerRealTime.Tick += new System.EventHandler(this.timerRealTime_Tick);
+            // 
+            // guna2ImageButton1
+            // 
+            this.guna2ImageButton1.CheckedState.ImageSize = new System.Drawing.Size(64, 64);
+            this.guna2ImageButton1.HoverState.ImageSize = new System.Drawing.Size(64, 64);
+            this.guna2ImageButton1.Image = ((System.Drawing.Image)(resources.GetObject("guna2ImageButton1.Image")));
+            this.guna2ImageButton1.ImageOffset = new System.Drawing.Point(0, 0);
+            this.guna2ImageButton1.ImageRotate = 0F;
+            this.guna2ImageButton1.ImageSize = new System.Drawing.Size(20, 20);
+            this.guna2ImageButton1.Location = new System.Drawing.Point(4, -1);
+            this.guna2ImageButton1.Name = "guna2ImageButton1";
+            this.guna2ImageButton1.PressedState.ImageSize = new System.Drawing.Size(64, 64);
+            this.guna2ImageButton1.Size = new System.Drawing.Size(23, 19);
+            this.guna2ImageButton1.TabIndex = 36;
             // 
             // frmMain
             // 
@@ -227,5 +244,6 @@
         private Guna.UI2.WinForms.Guna2Button btnBrowseStatus;
         public Guna.UI2.WinForms.Guna2HtmlLabel guna2HtmlLabel1;
         private System.Windows.Forms.Timer timerRealTime;
+        private Guna.UI2.WinForms.Guna2ImageButton guna2ImageButton1;
     }
 }

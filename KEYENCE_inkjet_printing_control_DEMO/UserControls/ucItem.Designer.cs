@@ -63,6 +63,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             this.lblWaitingPrintDetail = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.lblQueueData = new Guna.UI2.WinForms.Guna2HtmlLabel();
             this.guna2AnimateWindow1 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
+            this.guna2AnimateWindow2 = new Guna.UI2.WinForms.Guna2AnimateWindow(this.components);
             this.panelMain.SuspendLayout();
             this.panelDetails.SuspendLayout();
             this.panelDelete.SuspendLayout();
@@ -545,5 +546,6 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         public Guna.UI2.WinForms.Guna2HtmlLabel lblErrorManual;
         private Label lblStatusDetailValue;
         private Label lblError;
+        private Guna.UI2.WinForms.Guna2AnimateWindow guna2AnimateWindow2;
     }
 }
