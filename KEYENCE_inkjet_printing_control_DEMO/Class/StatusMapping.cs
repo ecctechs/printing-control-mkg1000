@@ -41,21 +41,22 @@ namespace StatusMapping
         private StatusData _statusData;
         private ErrorCollection _errorCollection;
 
-        //private string jsonPathStatus = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "status_mapping.json");
+        private string jsonPathStatus = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "status_mapping.json");
         private string jsonPathError = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "communication_errors.json");
 
         // โหลดไฟล์ status_mapping.json
         public bool LoadStatus()
         {
-            string projectRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)
-                              .Parent?.Parent?.Parent?.FullName ?? "";
+            //string projectRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)
+            //                  .Parent?.Parent?.Parent?.FullName ?? "";
 
-            string jsonPathStatus = Path.Combine(projectRoot, "KEYENCE_inkjet_printing_control_DEMO", "Data", "status_mapping.json");
-
+            //string jsonPathStatus = Path.Combine(projectRoot, "KEYENCE_inkjet_printing_control_DEMO", "Data", "status_mapping.json");
+            Console.WriteLine(jsonPathStatus);
             if (!File.Exists(jsonPathStatus))
                 return false;
 
             string jsonString = File.ReadAllText(jsonPathStatus);
+            Console.WriteLine(jsonString);
             _statusData = JsonConvert.DeserializeObject<StatusData>(jsonString);
 
             return _statusData != null;
