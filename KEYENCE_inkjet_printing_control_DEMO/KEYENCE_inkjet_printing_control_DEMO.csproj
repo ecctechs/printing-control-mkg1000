@@ -7,7 +7,7 @@
     <ProjectGuid>{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>KEYENCE_inkjet_printing_control_DEMO</RootNamespace>
-    <AssemblyName>KEYENCE_inkjet_printing_control_DEMO</AssemblyName>
+    <AssemblyName>โปรแกรมควบคุมเครื่องพิมพ์ - Keyence</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>5</ApplicationRevision>
+    <ApplicationRevision>6</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -181,6 +181,7 @@
     <EmbeddedResource Include="UserControls\ucOverview.resx">
       <DependentUpon>ucOverview.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="Data\status_mapping.json" />
     <None Include="KEYENCE_inkjet_printing_control_DEMO_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
