@@ -47,16 +47,11 @@ namespace StatusMapping
         // โหลดไฟล์ status_mapping.json
         public bool LoadStatus()
         {
-            //string projectRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory)
-            //                  .Parent?.Parent?.Parent?.FullName ?? "";
-
-            //string jsonPathStatus = Path.Combine(projectRoot, "KEYENCE_inkjet_printing_control_DEMO", "Data", "status_mapping.json");
-            Console.WriteLine(jsonPathStatus);
             if (!File.Exists(jsonPathStatus))
                 return false;
 
             string jsonString = File.ReadAllText(jsonPathStatus);
-            Console.WriteLine(jsonString);
+
             _statusData = JsonConvert.DeserializeObject<StatusData>(jsonString);
 
             return _statusData != null;
