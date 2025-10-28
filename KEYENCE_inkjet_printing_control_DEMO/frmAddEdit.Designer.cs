@@ -147,7 +147,7 @@
             // btnBrowseOutput
             // 
             this.btnBrowseOutput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseOutput.Image")));
-            this.btnBrowseOutput.Location = new System.Drawing.Point(672, 391);
+            this.btnBrowseOutput.Location = new System.Drawing.Point(672, 333);
             this.btnBrowseOutput.Name = "btnBrowseOutput";
             this.btnBrowseOutput.Size = new System.Drawing.Size(43, 45);
             this.btnBrowseOutput.TabIndex = 38;
@@ -157,7 +157,7 @@
             // btnBrowseInput
             // 
             this.btnBrowseInput.Image = ((System.Drawing.Image)(resources.GetObject("btnBrowseInput.Image")));
-            this.btnBrowseInput.Location = new System.Drawing.Point(672, 322);
+            this.btnBrowseInput.Location = new System.Drawing.Point(672, 255);
             this.btnBrowseInput.Name = "btnBrowseInput";
             this.btnBrowseInput.Size = new System.Drawing.Size(43, 45);
             this.btnBrowseInput.TabIndex = 37;
@@ -248,7 +248,7 @@
             this.btnAddInkjet.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.btnAddInkjet.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAddInkjet.ForeColor = System.Drawing.Color.White;
-            this.btnAddInkjet.Location = new System.Drawing.Point(535, 471);
+            this.btnAddInkjet.Location = new System.Drawing.Point(535, 437);
             this.btnAddInkjet.Name = "btnAddInkjet";
             this.btnAddInkjet.Size = new System.Drawing.Size(180, 45);
             this.btnAddInkjet.TabIndex = 33;
@@ -271,7 +271,7 @@
             this.txtOutputDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtOutputDirectory.ForeColor = System.Drawing.Color.Black;
             this.txtOutputDirectory.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtOutputDirectory.Location = new System.Drawing.Point(409, 391);
+            this.txtOutputDirectory.Location = new System.Drawing.Point(409, 333);
             this.txtOutputDirectory.Margin = new System.Windows.Forms.Padding(5);
             this.txtOutputDirectory.Name = "txtOutputDirectory";
             this.txtOutputDirectory.PlaceholderText = "";
@@ -297,7 +297,7 @@
             this.txtInputDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtInputDirectory.ForeColor = System.Drawing.Color.Black;
             this.txtInputDirectory.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.txtInputDirectory.Location = new System.Drawing.Point(409, 322);
+            this.txtInputDirectory.Location = new System.Drawing.Point(409, 255);
             this.txtInputDirectory.Margin = new System.Windows.Forms.Padding(5);
             this.txtInputDirectory.Name = "txtInputDirectory";
             this.txtInputDirectory.PlaceholderText = "";
@@ -329,6 +329,7 @@
             this.txtPort.SelectedText = "";
             this.txtPort.Size = new System.Drawing.Size(306, 45);
             this.txtPort.TabIndex = 30;
+            this.txtPort.Visible = false;
             this.txtPort.TextChanged += new System.EventHandler(this.txtPort_TextChanged);
             this.txtPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.AllowNumbersOnly);
             // 
@@ -386,7 +387,7 @@
             this.guna2HtmlLabel5.AutoSize = false;
             this.guna2HtmlLabel5.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2HtmlLabel5.Location = new System.Drawing.Point(170, 406);
+            this.guna2HtmlLabel5.Location = new System.Drawing.Point(170, 333);
             this.guna2HtmlLabel5.Margin = new System.Windows.Forms.Padding(4);
             this.guna2HtmlLabel5.Name = "guna2HtmlLabel5";
             this.guna2HtmlLabel5.Size = new System.Drawing.Size(203, 30);
@@ -399,7 +400,7 @@
             this.guna2HtmlLabel4.AutoSize = false;
             this.guna2HtmlLabel4.BackColor = System.Drawing.Color.Transparent;
             this.guna2HtmlLabel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.guna2HtmlLabel4.Location = new System.Drawing.Point(170, 341);
+            this.guna2HtmlLabel4.Location = new System.Drawing.Point(170, 274);
             this.guna2HtmlLabel4.Margin = new System.Windows.Forms.Padding(4);
             this.guna2HtmlLabel4.Name = "guna2HtmlLabel4";
             this.guna2HtmlLabel4.Size = new System.Drawing.Size(182, 26);
@@ -418,6 +419,7 @@
             this.guna2HtmlLabel3.Size = new System.Drawing.Size(161, 23);
             this.guna2HtmlLabel3.TabIndex = 6;
             this.guna2HtmlLabel3.Text = "Port :";
+            this.guna2HtmlLabel3.Visible = false;
             // 
             // guna2HtmlLabel2
             // 

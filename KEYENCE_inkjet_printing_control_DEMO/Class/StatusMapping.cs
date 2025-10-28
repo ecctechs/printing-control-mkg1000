@@ -42,11 +42,13 @@ namespace StatusMapping
         private ErrorCollection _errorCollection;
 
         private string jsonPathStatus = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "status_mapping.json");
-        private string jsonPathError = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "communication_errors.json");
+        private string jsonPathError = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data" ,"communication_errors.json");
 
         // โหลดไฟล์ status_mapping.json
         public bool LoadStatus()
         {
+            Console.WriteLine(jsonPathStatus);
+            Console.WriteLine(jsonPathError);
             if (!File.Exists(jsonPathStatus))
                 return false;
 

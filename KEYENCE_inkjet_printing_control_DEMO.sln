@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KEYENCE_inkjet_printing_control_DEMO", "KEYENCE_inkjet_printing_control_DEMO\KEYENCE_inkjet_printing_control_DEMO.csproj", "{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "KeyencePrinterSetup", "KeyencePrinterSetup\KeyencePrinterSetup.vdproj", "{60C1EC58-568E-4BB3-B53B-1C89E0F5F5AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,8 @@ Global
 		{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C1EC58-568E-4BB3-B53B-1C89E0F5F5AA}.Debug|Any CPU.ActiveCfg = Debug
+		{60C1EC58-568E-4BB3-B53B-1C89E0F5F5AA}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

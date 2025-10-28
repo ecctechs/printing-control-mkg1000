@@ -85,7 +85,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             if (_currentConfig == null || string.IsNullOrEmpty(_currentConfig.InputDirectory) || !Directory.Exists(_currentConfig.InputDirectory)) // กรณีนี้ที่โฟลเดอร์ถูกเซ็ตไว้ แล้วโดนลบจะเข้าเงือนไขนี้
             {
                 // อาจแสดงข้อความสถานะได้
-                txtCurrentData.Text = "Invalid Input Directory";
+                //txtCurrentData.Text = "Invalid Input Directory";
                 return;
             }
 
@@ -306,8 +306,8 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 currentStatus.ErrorDetail = string.Join(",", details) != "---"
                 ? $"\"[{string.Join(",", details)}]\""
                 : "---";
-                currentStatus.ErrorCode = string.Join(",", details) != "---"
-                ? $"\"[{string.Join(",", details)}]\""
+                currentStatus.ErrorCode = string.Join(",", codes) != "---"
+                ? $"\"[{string.Join(",", codes)}]\""
                 : "---";
             }
             else
