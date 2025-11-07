@@ -140,7 +140,7 @@ public static class KeyenceConnectionManager
             string[] parts = message.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
             // block 01 = ข้อความทั้งหมดต่อกัน
-            string block01 = string.Join("", parts);
+            string block01 = string.Join(" ", parts);
 
             // block 02 = รหัสงาน + เลขรถ (ตัวอย่าง: L4-F937)
             string block02 = parts.Length > 0 && parts.Length > 1 ? parts[0] + parts[1] : "";
