@@ -109,3 +109,5 @@
  - Guna.UI2.WinForms 2.0.4.7
  - Newtonsoft.Json 13.0.3
  - .NET Framework 4.7.2
+
+ไฟล์สอนติดตั้งและวิธีใช้งานอยู่ใน Path https://github.com/ecctechs/printing-control-mkg1000/tree/master/manual
