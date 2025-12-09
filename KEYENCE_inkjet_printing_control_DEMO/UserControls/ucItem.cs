@@ -22,6 +22,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 {
     public partial class ucItem : UserControl
     {
+        private static ToolTip sharedToolTip = new ToolTip();
         public event EventHandler ItemDeleted;
         public event EventHandler ItemEdited;
         private InkjetConfig _currentConfig;
@@ -275,10 +276,14 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
             lblStatusDetailValue.Visible = (mainCategory == "Error" || mainCategory == "Warning");
 
             // --- Tooltip แสดงรายละเอียดทั้งหมด ---
+            //string detail = string.Join(Environment.NewLine, tooltipList);
+            //ToolTip tt = new ToolTip();
+            //tt.SetToolTip(lblStatusValue, detail);
+            //tt.SetToolTip(lblStatusDetailValue, detail);
+
             string detail = string.Join(Environment.NewLine, tooltipList);
-            ToolTip tt = new ToolTip();
-            tt.SetToolTip(lblStatusValue, detail);
-            tt.SetToolTip(lblStatusDetailValue, detail);
+            sharedToolTip.SetToolTip(lblStatusValue, detail);
+            sharedToolTip.SetToolTip(lblStatusDetailValue, detail);
 
             // --- สร้าง status object ---
             var currentStatus = new CurrentInkjetStatus
