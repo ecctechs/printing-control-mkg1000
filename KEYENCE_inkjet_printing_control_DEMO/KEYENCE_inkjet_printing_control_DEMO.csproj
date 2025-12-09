@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{57B60D71-B14A-4FA6-A1AA-10C7270CE0D3}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>KEYENCE_inkjet_printing_control_DEMO</RootNamespace>
     <AssemblyName>โปรแกรมควบคุมเครื่องพิมพ์ - Keyence</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>

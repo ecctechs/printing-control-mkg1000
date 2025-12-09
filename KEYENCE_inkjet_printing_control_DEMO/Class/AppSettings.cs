@@ -14,25 +14,40 @@ public class AppSettings
     /// บันทึก path ลงใน appsettings.json
     public static void SaveAppSettings(string path)
     {
-        var settings = new AppSettings
+        try // ✅ เพิ่ม try-catch
         {
-            StatusLogPath = path
-        };
+            var settings = new AppSettings
+            {
+                StatusLogPath = path
+            };
 
-        string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
-        File.WriteAllText(settingsFilePath, json);
+            string json = JsonConvert.SerializeObject(settings, Formatting.Indented);
+            File.WriteAllText(settingsFilePath, json);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error SaveAppSettings : {ex.Message}");
+        }
     }
 
     /// โหลด path จาก appsettings.json
     public static string LoadAppSettings()
     {
-        if (!File.Exists(settingsFilePath))
+        try // ✅ เพิ่ม try-catch
         {
-            return null;
-        }
+            if (!File.Exists(settingsFilePath))
+            {
+                return null;
+            }
 
-        string json = File.ReadAllText(settingsFilePath);
-        var settings = JsonConvert.DeserializeObject<AppSettings>(json);
-        return settings?.StatusLogPath;
+            string json = File.ReadAllText(settingsFilePath);
+            var settings = JsonConvert.DeserializeObject<AppSettings>(json);
+            return settings?.StatusLogPath;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error LoadAppSettings: {ex.Message}");
+            return null; // คืนค่า null หากมีปัญหาในการโหลด
+        }
     }
 }

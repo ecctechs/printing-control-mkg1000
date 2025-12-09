@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
@@ -34,8 +35,10 @@ public class KeyencePrinterConnector
     /// <param name="timeoutMilliseconds">เวลาสูงสุดที่รอการเชื่อมต่อ (หน่วย: มิลลิวินาที)</param>
     public async Task ConnectAsync(string ipAddress, int port = 9004, int timeoutMilliseconds = 3000)
     {
-        // ถ้ามีการเชื่อมต่อเก่าค้างอยู่ ให้ตัดการเชื่อมต่อก่อน
-        if (IsConnected)
+        try
+        {
+            // ถ้ามีการเชื่อมต่อเก่าค้างอยู่ ให้ตัดการเชื่อมต่อก่อน
+            if (IsConnected)
         {
             Disconnect();
         }
@@ -67,6 +70,11 @@ public class KeyencePrinterConnector
         _stream = _tcpClient.GetStream();
         _stream.ReadTimeout = 3000;  // ตั้งค่า Timeout สำหรับการอ่านข้อมูล
         _stream.WriteTimeout = 3000; // ตั้งค่า Timeout สำหรับการส่งข้อมูล
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed ConnectAsync: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -92,28 +100,75 @@ public class KeyencePrinterConnector
     /// </summary>
     /// <param name="command">คำสั่งที่ต้องการส่ง (เช่น "SB" สำหรับขอสถานะ)</param>
     /// <returns>ข้อมูลที่เครื่องพิมพ์ตอบกลับมาในรูปแบบ string</returns>
+    //public async Task<string> SendCommandAsync(string command)
+    //{
+    //    // ตรวจสอบก่อนว่าเชื่อมต่ออยู่หรือไม่
+    //    if (!IsConnected)
+    //    {
+    //        throw new InvalidOperationException("ยังไม่ได้เชื่อมต่อกับเครื่องพิมพ์");
+    //    }
+
+    //    // ตามคู่มือ คำสั่งต้องลงท้ายด้วย CR (Carriage Return)
+    //    string fullCommand = command + "\r";
+    //    byte[] dataToSend = Encoding.ASCII.GetBytes(fullCommand);
+
+    //    // ส่งข้อมูลคำสั่ง
+    //    await _stream.WriteAsync(dataToSend, 0, dataToSend.Length);
+
+    //    // รอรับข้อมูลตอบกลับจากเครื่องพิมพ์
+    //    byte[] buffer = new byte[2048]; // สร้าง Buffer ขนาดใหญ่พอสำหรับรับข้อมูล
+    //    int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+    //    string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+
+    //    // ทำความสะอาดข้อมูลตอบกลับ โดยตัดอักขระพิเศษ (เช่น CR) ที่อาจติดมาตอนท้ายออก
+    //    return response.Trim();
+    //}
+
+    // KeyencePrinterConnector.cs
     public async Task<string> SendCommandAsync(string command)
     {
-        // ตรวจสอบก่อนว่าเชื่อมต่ออยู่หรือไม่
         if (!IsConnected)
         {
             throw new InvalidOperationException("ยังไม่ได้เชื่อมต่อกับเครื่องพิมพ์");
         }
 
-        // ตามคู่มือ คำสั่งต้องลงท้ายด้วย CR (Carriage Return)
+        // ✅ เพิ่มการตั้งค่า ReceiveTimeout (เช่น 5 วินาที) ก่อนการ Read
+        if (_tcpClient != null)
+        {
+            _tcpClient.ReceiveTimeout = 5000; // 5000 มิลลิวินาที (ปรับได้ตามต้องการ)
+        }
+
         string fullCommand = command + "\r";
         byte[] dataToSend = Encoding.ASCII.GetBytes(fullCommand);
 
-        // ส่งข้อมูลคำสั่ง
         await _stream.WriteAsync(dataToSend, 0, dataToSend.Length);
 
-        // รอรับข้อมูลตอบกลับจากเครื่องพิมพ์
-        byte[] buffer = new byte[2048]; // สร้าง Buffer ขนาดใหญ่พอสำหรับรับข้อมูล
-        int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
-        string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+        byte[] buffer = new byte[2048];
 
-        // ทำความสะอาดข้อมูลตอบกลับ โดยตัดอักขระพิเศษ (เช่น CR) ที่อาจติดมาตอนท้ายออก
-        return response.Trim();
+        try
+        {
+            int bytesRead = await _stream.ReadAsync(buffer, 0, buffer.Length);
+
+            if (bytesRead == 0)
+            {
+                throw new Exception("เครื่องพิมพ์ปิดการเชื่อมต่ออย่างกะทันหัน");
+            }
+
+            string response = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+            return response.Trim();
+        }
+        // ✅ ดักจับ IOException ที่เกิดจาก Socket Timeout โดยเฉพาะ
+        catch (IOException ex) when (ex.InnerException is SocketException se && se.SocketErrorCode == SocketError.TimedOut)
+        {
+            Disconnect();
+            // โยน TimeoutException เพื่อให้ KeyenceConnectionManager ดักจับต่อไป
+            throw new TimeoutException($"หมดเวลาการรอรับข้อมูลตอบกลับจากเครื่องพิมพ์ ({_tcpClient.ReceiveTimeout}ms)", ex);
+        }
+        catch (Exception)
+        {
+            Disconnect();
+            throw;
+        }
     }
 
     #endregion

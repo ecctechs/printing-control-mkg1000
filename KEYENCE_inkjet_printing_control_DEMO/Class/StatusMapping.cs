@@ -47,62 +47,97 @@ namespace StatusMapping
         // โหลดไฟล์ status_mapping.json
         public bool LoadStatus()
         {
-            Console.WriteLine(jsonPathStatus);
-            Console.WriteLine(jsonPathError);
-            if (!File.Exists(jsonPathStatus))
-                return false;
+            try // ✅ เพิ่ม try-catch
+            {
+                Console.WriteLine(jsonPathStatus);
+                Console.WriteLine(jsonPathError);
+                if (!File.Exists(jsonPathStatus))
+                    return false;
 
-            string jsonString = File.ReadAllText(jsonPathStatus);
+                string jsonString = File.ReadAllText(jsonPathStatus);
 
-            _statusData = JsonConvert.DeserializeObject<StatusData>(jsonString);
+                _statusData = JsonConvert.DeserializeObject<StatusData>(jsonString);
 
-            return _statusData != null;
+                return _statusData != null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error function LoadStatus: {ex.Message}");
+                return false; // คืนค่า false หากมีปัญหา
+            }
         }
 
         // โหลดไฟล์ communication_errors.json
         public bool LoadCommunicationError()
         {
-            if (!File.Exists(jsonPathError))
-                return false;
+            try // ✅ เพิ่ม try-catch
+            {
+                if (!File.Exists(jsonPathError))
+                    return false;
 
-            string jsonString = File.ReadAllText(jsonPathError);
-            _errorCollection = JsonConvert.DeserializeObject<ErrorCollection>(jsonString);
+                string jsonString = File.ReadAllText(jsonPathError);
+                _errorCollection = JsonConvert.DeserializeObject<ErrorCollection>(jsonString);
 
-            return _errorCollection != null;
+                return _errorCollection != null;
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error LoadCommunicationError : {ex.Message}");
+                return false; // คืนค่า false หากมีปัญหา
+            }
         }
 
         // คืน CommunicationError ทั้งหมด
 
         public CommunicationError GetCommunicationErrorByCode(string code)
         {
-            if (_errorCollection?.CommunicationErrors == null)
-                return null;
+            try // ✅ เพิ่ม try-catch
+            {
+                if (_errorCollection?.CommunicationErrors == null)
+                    return null;
 
-            return _errorCollection.CommunicationErrors
-                .FirstOrDefault(err => err.Code == code);
+                return _errorCollection.CommunicationErrors
+                    .FirstOrDefault(err => err.Code == code);
+            }
+
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error LoadCommunicationError : {ex.Message}");
+                return null;
+            }
+
         }
 
         // คืนข้อความสถานะตามรหัส
         public string GetStatus(string code, string type)
         {
-            if (_statusData == null)
-                return "[UNKNOWN] Mapping not loaded";
-
-            if (type == "EV")
+            try
             {
-                if (_statusData.ErrorCodes != null && _statusData.ErrorCodes.ContainsKey(code))
-                    return _statusData.ErrorCodes[code];
+                if (_statusData == null)
+                    return "[UNKNOWN] Mapping not loaded";
 
-                if (_statusData.WarningCodes != null && _statusData.WarningCodes.ContainsKey(code))
-                    return _statusData.WarningCodes[code];
+                if (type == "EV")
+                {
+                    if (_statusData.ErrorCodes != null && _statusData.ErrorCodes.ContainsKey(code))
+                        return _statusData.ErrorCodes[code];
+
+                    if (_statusData.WarningCodes != null && _statusData.WarningCodes.ContainsKey(code))
+                        return _statusData.WarningCodes[code];
+                }
+                else if (type == "SB")
+                {
+                    if (_statusData.StatusCodes != null && _statusData.StatusCodes.ContainsKey(code))
+                        return _statusData.StatusCodes[code];
+                }
+
+                return "---";
             }
-            else if (type == "SB")
+            catch (Exception ex)
             {
-                if (_statusData.StatusCodes != null && _statusData.StatusCodes.ContainsKey(code))
-                    return _statusData.StatusCodes[code];
+                Console.WriteLine($"Error GetStatus : {ex.Message}");
+                return null;
             }
-
-            return "---";
         }
     }
 }

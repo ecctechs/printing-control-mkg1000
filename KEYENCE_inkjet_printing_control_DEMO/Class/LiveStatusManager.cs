@@ -35,8 +35,10 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
         /// </summary>
         public static void Initialize(List<InkjetConfig> configs)
         {
-            // โหลด path สำหรับบันทึกไฟล์จาก AppSettings
-            string loadedStatusCsvPath = AppSettings.LoadAppSettings();
+            try
+            {
+                // โหลด path สำหรับบันทึกไฟล์จาก AppSettings
+                string loadedStatusCsvPath = AppSettings.LoadAppSettings();
 
             // ❗ ถ้า path ว่างเปล่า จะไม่ดำเนินการต่อ
             if (string.IsNullOrWhiteSpace(loadedStatusCsvPath))
@@ -55,7 +57,13 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
                     CurrentMessage = "Initializing..."
                 }
             );
-            SaveStatusFile(); // บันทึกสถานะเริ่มต้นลงไฟล์
+            //SaveStatusFile(); // บันทึกสถานะเริ่มต้นลงไฟล์
+        }
+            catch (Exception ex)
+            {
+                // ดักจับ DirectoryNotFoundException, IOException
+                Console.WriteLine($"Failed Initialize: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -63,13 +71,21 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
         /// </summary>
         public static void UpdateAndSaveStatus(CurrentInkjetStatus newStatus)
         {
-            lock (_fileLock)
+            try
             {
-                if (_liveStatuses.ContainsKey(newStatus.InkjetName))
+                lock (_fileLock)
                 {
-                    _liveStatuses[newStatus.InkjetName] = newStatus;
-                    SaveStatusFile();
+                    if (_liveStatuses.ContainsKey(newStatus.InkjetName))
+                    {
+                        _liveStatuses[newStatus.InkjetName] = newStatus;
+                        SaveStatusFile();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                // ดักจับ DirectoryNotFoundException, IOException
+                Console.WriteLine($"Failed UpdateAndSaveStatus: {ex.Message}");
             }
         }
 
@@ -102,6 +118,11 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
 
             try
             {
+                string directoryPath = Path.GetDirectoryName(_statusFilePath);
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
                 // เขียนทับไฟล์ด้วยเนื้อหาใหม่
                 File.WriteAllText(_statusFilePath, csvBuilder.ToString());
             }

@@ -40,14 +40,24 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
         // โหลดข้อมูลจากไฟล์
         public static List<InkjetConfig> Load()
         {
-            // ✅ เพิ่ม lock ที่นี่เพื่อป้องกันการอ่านไฟล์ขณะที่มีการเขียน
             lock (_fileLock)
             {
-                if (!File.Exists(configFile))
-                    return new List<InkjetConfig>();
+                try // ✅ เพิ่ม try-catch
+                {
+                    if (!File.Exists(configFile))
+                    {
+                        return new List<InkjetConfig>();
+                    }
 
-                string json = File.ReadAllText(configFile);
-                return JsonConvert.DeserializeObject<List<InkjetConfig>>(json) ?? new List<InkjetConfig>();
+                    string json = File.ReadAllText(configFile);
+                    return JsonConvert.DeserializeObject<List<InkjetConfig>>(json) ?? new List<InkjetConfig>();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error Load(): {ex.Message}");
+                    // คืนค่าว่างเพื่อให้โปรแกรมดำเนินต่อไปได้
+                    return new List<InkjetConfig>();
+                }
             }
         }
 
@@ -56,8 +66,17 @@ namespace KEYENCE_inkjet_printing_control_DEMO.Class
         {
             lock (_fileLock)
             {
-                string json = JsonConvert.SerializeObject(configs, Formatting.Indented);
-                File.WriteAllText(configFile, json);
+                try // ✅ เพิ่ม try-catch
+                {
+                    string json = JsonConvert.SerializeObject(configs, Formatting.Indented);
+                    File.WriteAllText(configFile, json);
+                }
+                catch (Exception ex)
+                {
+                    // ดักจับและแจ้งข้อผิดพลาด เช่น ไฟล์ถูกล็อก
+                    Console.WriteLine($"Error Save(List<InkjetConfig> configs): {ex.Message}");
+                    // ไม่ควร Crash โปรแกรม
+                }
             }
         }
 

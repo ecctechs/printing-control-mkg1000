@@ -24,8 +24,38 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
 
         private async void StatusPollTimer_Tick(object sender, EventArgs e)
         {
-            // สั่งให้ Manager ไปถามสถานะเครื่องพิมพ์ทั้งหมด
-            await KeyenceConnectionManager.PollAllStatusesAsync();
+            // ✅ เปลี่ยนโค้ดเพื่อสร้าง Reconnection Loop
+            var configs = ConfigManager.Load();
+
+            // วนลูปผ่านเครื่องพิมพ์ทั้งหมด
+            foreach (var config in configs)
+            {
+                string inkjetName = config.InkjetName;
+
+                try
+                {
+                    // 1. ถ้าขาดการเชื่อมต่อ ให้พยายามเชื่อมต่อใหม่
+                    if (!KeyenceConnectionManager.IsConnected(inkjetName))
+                    {
+                        Console.WriteLine($"[{inkjetName}] -  try auto connecting... ({config.IpAddress}:{config.Port})...");
+                        await KeyenceConnectionManager.ConnectAsync(inkjetName, config.IpAddress, config.Port);
+                        Console.WriteLine($"[{inkjetName}] - ✅ connect success!");
+                    }
+
+                    // 2. ถ้าเชื่อมต่อแล้ว (หรือเชื่อมต่อกลับไปสำเร็จ) ให้ Polling สถานะ
+                    if (KeyenceConnectionManager.IsConnected(inkjetName))
+                    {
+                        // ❗ เรียกเมธอด Polling เครื่องพิมพ์เดียว
+                        await KeyenceConnectionManager.PollSingleStatusAsync(inkjetName);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // ดักจับ Exception ที่หลุดออกมาจากการเชื่อมต่อ/Polling (เช่น TimeoutException)
+                    Console.WriteLine($"[{inkjetName}] - ❌ ERROR ใน Reconnection/Polling: {ex.Message}");
+                    // สถานะจะถูกตั้งเป็น Disconnected โดย KeyenceConnectionManager อยู่แล้ว
+                }
+            }
         }
 
         public void GetListInkjet()

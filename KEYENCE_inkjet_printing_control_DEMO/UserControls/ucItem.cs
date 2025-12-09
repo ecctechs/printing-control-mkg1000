@@ -25,6 +25,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
         public event EventHandler ItemDeleted;
         public event EventHandler ItemEdited;
         private InkjetConfig _currentConfig;
+        private readonly object _logFileLock = new object();
 
         private Panel _leftEdgePanel;
 
@@ -114,28 +115,38 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                     {
                         txtLaterPrintDetail.BorderColor = Color.Black;
                         lblError.Visible = false;
-    
+
                         await Task.Run(() =>
                         {
-                            string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
-                            string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
-
-                            // --- Create a new status object to send to the manager ---
-                            var currentStatus = new CurrentInkjetStatus
+                            lock (_logFileLock) // 👈 เพิ่ม Lock
                             {
-                                Timestamp = DateTime.Now,
-                                InkjetName = _currentConfig.InkjetName,
-                                CurrentMessage = fileContent, // Use existing data                       
-                            };
+                                string logFilePath = Path.Combine(_currentConfig.OutputDirectory, "processing_log.txt");
+                                string logEntry = $"{processTime:G},{_currentConfig.InkjetName},Auto,{fileContent.Replace(Environment.NewLine, " ")}";
 
-                            // ✅ Call the new manager to update this printer's status and rewrite the file.
-                            LiveStatusManager.UpdateAndSaveStatus(currentStatus);
+                                // --- Create a new status object to send to the manager ---
+                                var currentStatus = new CurrentInkjetStatus
+                                {
+                                    Timestamp = DateTime.Now,
+                                    InkjetName = _currentConfig.InkjetName,
+                                    CurrentMessage = fileContent, // Use existing data                       
+                                };
 
-                            File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+                                // ✅ Call the new manager to update this printer's status and rewrite the file.
+                                //LiveStatusManager.UpdateAndSaveStatus(currentStatus);
 
-                            // ลบไฟล์ต้นทาง
-                            File.Delete(txtFile);
+                                string directory = Path.GetDirectoryName(logFilePath);
+                                if (!Directory.Exists(directory))
+                                {
+                                    Directory.CreateDirectory(directory);
+                                }
+                                File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
+
+
+                                // ลบไฟล์ต้นทาง
+                                File.Delete(txtFile);
+                            }
                         });
+                   
 
                         // อัพเดท UI หลังประมวลผลเสร็จ
                         txtQueueDataValue.Text = $"{processTime:G} - {fileName}";
@@ -315,8 +326,7 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                 currentStatus.ErrorDetail = "---";
                 currentStatus.ErrorCode = "---";
             }
-
-            LiveStatusManager.UpdateAndSaveStatus(currentStatus);
+            //LiveStatusManager.UpdateAndSaveStatus(currentStatus);
         }
 
         private void SetStatusColor(string status)
@@ -468,6 +478,11 @@ namespace KEYENCE_inkjet_printing_control_DEMO.UserControls
                         lblErrorManual.Visible = false;
                         txtWaitingPrintDetail.BorderColor = Color.Black;
 
+                        string directory = Path.GetDirectoryName(logFilePath);
+                        if (!Directory.Exists(directory))
+                        {
+                            Directory.CreateDirectory(directory);
+                        }
                         File.AppendAllText(logFilePath, logEntry + Environment.NewLine);
                         MessageBox.Show("ส่งข้อมูล Manual สำเร็จ", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
